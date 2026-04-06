@@ -6,11 +6,12 @@ import {
   createPublicClient,
   custom,
   http,
+  WalletClient,
 } from '@arkiv-network/sdk';
 import { kaolin } from '@arkiv-network/sdk/chains';
 
 export function useArkiv() {
-  const [walletClient, setWalletClient] = useState<any>(null);
+  const [walletClient, setWalletClient] = useState<WalletClient>(null);
   const [account, setAccount] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
 

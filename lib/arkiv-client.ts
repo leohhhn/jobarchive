@@ -1,27 +1,16 @@
-import { config } from 'dotenv';
-config({ path: '.env.local' });
-
-import {
-  createWalletClient,
-  createPublicClient,
-  http,
-} from '@arkiv-network/sdk';
-import { privateKeyToAccount } from '@arkiv-network/sdk/accounts';
+import { createWalletClient, custom } from 'viem';
+import { createWalletClient as createArkivClient } from '@arkiv-network/sdk';
 import { kaolin } from '@arkiv-network/sdk/chains';
 
-const account = privateKeyToAccount(
-  process.env.ARKIV_PRIVATE_KEY as `0x${string}`,
-);
-
-// readonly
-export const publicClient = createPublicClient({
+// get wallet from browser
+const viemWallet = createWalletClient({
   chain: kaolin,
-  transport: http(),
+  transport: custom(window.ethereum),
 });
 
-// write
-export const walletClient = createWalletClient({
+// give wallet to arkiv
+const arkivClient = createArkivClient({
   chain: kaolin,
-  transport: http(),
-  account,
+  transport: custom(window.ethereum),
+  account: viemWallet.account,
 });

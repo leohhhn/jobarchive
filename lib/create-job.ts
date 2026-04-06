@@ -1,8 +1,9 @@
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils';
 import { JobPosting, PROJECT_ATTRIBUTE } from './types';
-import { walletClient } from './arkiv-client';
+import { type WalletClient } from '@arkiv-network/sdk';
 
 export async function createJob(
+  walletClient: WalletClient,
   job: Omit<JobPosting, 'id' | 'author'>,
 ): Promise<string> {
   const { entityKey } = await walletClient.createEntity({
@@ -11,7 +12,7 @@ export async function createJob(
       company: job.company,
       description: job.description,
       compensation: job.compensation ?? null,
-      author: walletClient.account.address,
+      author: walletClient.account?.address,
     }),
     contentType: 'application/json',
     attributes: [
