@@ -4,10 +4,8 @@ interface JobCardProps {
   job: JobPosting;
 }
 
-function daysUntilExpiry(expiresAt: string): number {
-  const now = new Date();
-  const expiry = new Date(expiresAt);
-  const diff = expiry.getTime() - now.getTime();
+function daysUntilExpiry(expiresAt: number): number {
+  const diff = expiresAt - Date.now();
   return Math.ceil(diff / (1000 * 60 * 60 * 24));
 }
 
