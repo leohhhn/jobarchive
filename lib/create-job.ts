@@ -39,9 +39,11 @@ export async function createJob(
       { key: 'remote', value: job.remote ? 'true' : 'false' },
       { key: 'stack', value: job.stack.join(',') },
       { key: 'postedAt', value: Date.now() },
-      { key: 'expiresAt', value: Date.now() + 30 * 24 * 60 * 60 * 1000 },
+      { key: 'expiresAt', value: job.expiresAt },
     ],
-    expiresIn: ExpirationTime.fromDays(30),
+    expiresIn: ExpirationTime.fromDays(
+      Math.ceil((job.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)),
+    ),
   });
 
   return { entityKey, txHash };

@@ -15,5 +15,5 @@ export interface JobPosting {
 
 export const PROJECT_ATTRIBUTE = {
   key: 'project',
-  value: 'LEON_WEB3_JOBS1',
+  value: 'TESTTESTLEONJOBS',
 };

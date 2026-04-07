@@ -7,6 +7,14 @@ import { createJob } from '../lib/create-job';
 import { revalidateAndRedirectHome } from '../app/actions';
 import { useIsMounted } from '../hooks/useIsMounted';
 
+const EXPIRY_OPTIONS = [
+  { label: '7 days', days: 7 },
+  { label: '14 days', days: 14 },
+  { label: '30 days', days: 30 },
+  { label: '60 days', days: 60 },
+  { label: '90 days', days: 90 },
+] as const;
+
 export default function JobForm() {
   const { connector, address, isConnected, isConnecting, isReconnecting } =
     useAccount();
@@ -24,6 +32,8 @@ export default function JobForm() {
     stack: '',
     description: '',
     compensation: '',
+    expiryDays: 30 as number,
+    customExpiry: false,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -46,14 +56,14 @@ export default function JobForm() {
     }));
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!canSubmit || !connector || !address) return;
 
     setLoading(true);
     setError(null);
     try {
-      const { txHash } = await createJob(connector, address, {
+      const { entityKey, txHash } = await createJob(connector, address, {
         title: form.title.trim(),
         company: form.company.trim(),
         location: form.location.trim(),
@@ -66,7 +76,7 @@ export default function JobForm() {
         description: form.description.trim(),
         compensation: form.compensation.trim() || undefined,
         postedAt: Date.now(),
-        expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
+        expiresAt: Date.now() + form.expiryDays * 24 * 60 * 60 * 1000,
       });
       setTxHash(txHash);
     } catch (err: unknown) {
@@ -191,6 +201,60 @@ export default function JobForm() {
             onChange={handleChange}
             disabled={loading}
           />
+        </Field>
+        <Field label="Listing duration" htmlFor="expiryDays">
+          <div className="flex gap-2">
+            <select
+              className={input(form.customExpiry ? 'w-auto' : 'w-full')}
+              value={form.customExpiry ? 'custom' : form.expiryDays}
+              onChange={(e) => {
+                if (e.target.value === 'custom') {
+                  setForm((prev) => ({ ...prev, customExpiry: true }));
+                } else {
+                  setForm((prev) => ({
+                    ...prev,
+                    expiryDays: Number(e.target.value),
+                    customExpiry: false,
+                  }));
+                }
+              }}
+              disabled={loading}
+            >
+              {EXPIRY_OPTIONS.map(({ label, days }) => (
+                <option key={days} value={days}>
+                  {label}
+                </option>
+              ))}
+              <option value="custom">Custom...</option>
+            </select>
+
+            {form.customExpiry && (
+              <div className="flex items-center gap-2 flex-1">
+                <input
+                  id="expiryDays"
+                  type="number"
+                  min={1}
+                  max={365}
+                  placeholder="e.g. 45"
+                  className={input()}
+                  style={{ width: '120px' }}
+                  value={form.expiryDays === 30 ? '' : form.expiryDays}
+                  onChange={(e) => {
+                    const val = Math.max(
+                      1,
+                      Math.min(365, Number(e.target.value)),
+                    );
+                    setForm((prev) => ({ ...prev, expiryDays: val }));
+                  }}
+                  disabled={loading}
+                  autoFocus
+                />
+                <span className="text-sm text-gray-500 whitespace-nowrap">
+                  days
+                </span>
+              </div>
+            )}
+          </div>
         </Field>
 
         <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">

@@ -1,10 +1,16 @@
 @import "tailwindcss";
 
-@plugin "daisyui" {
-  themes: light --default;
+:root {
+  --arkiv-blue: #181EA9;
+  --arkiv-orange: #FE7446;
+  --arkiv-ink: #111111;
+  --arkiv-sand: #F6F4EF;
+  --arkiv-stone: #E9E6DE;
 }
 
 body {
-  background-color: #f8fafc;
+  background-color: var(--arkiv-sand);
+  color: var(--arkiv-ink);
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
