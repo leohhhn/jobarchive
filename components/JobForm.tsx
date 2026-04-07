@@ -1,29 +1,41 @@
 'use client';
 
+import Link from 'next/link';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useArkiv } from '@/hooks/useArkiv';
-import { createJob } from '@/lib/create-job';
+import { useAccount } from 'wagmi';
+import { createJob } from '../lib/create-job';
+import { revalidateAndRedirectHome } from '../app/actions';
+import { useIsMounted } from '../hooks/useIsMounted';
 
 export default function JobForm() {
-  const router = useRouter();
-  const { walletClient, isConnected, connect } = useArkiv();
-  const [loading, setLoading] = useState(false);
+  const { connector, address, isConnected, isConnecting, isReconnecting } =
+    useAccount();
+  const mounted = useIsMounted();
+
+  const walletLoading = !mounted() || isConnecting || isReconnecting;
+
   const [form, setForm] = useState({
     title: '',
     company: '',
     location: '',
     remote: false,
-    category: 'engineering',
+    category: '',
     stack: '',
     description: '',
     compensation: '',
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const canSubmit =
+    isConnected &&
+    form.title.trim() &&
+    form.company.trim() &&
+    form.description.trim() &&
+    !loading;
 
   function handleChange(
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) {
     const { name, value, type } = e.target;
     setForm((prev) => ({
@@ -33,119 +45,218 @@ export default function JobForm() {
     }));
   }
 
-  async function handleSubmit() {
-    if (!walletClient) return;
+  async function handleSubmit(e: React.SubmitEvent) {
+    e.preventDefault();
+    if (!canSubmit || !connector || !address) return;
+
     setLoading(true);
+    setError(null);
     try {
-      await createJob(walletClient, {
-        title: form.title,
-        company: form.company,
-        location: form.location,
+      await createJob(connector, address, {
+        title: form.title.trim(),
+        company: form.company.trim(),
+        location: form.location.trim(),
         remote: form.remote,
-        category: form.category,
-        stack: form.stack.split(',').map((s) => s.trim()),
-        description: form.description,
-        compensation: form.compensation || undefined,
-        author: walletClient.account.address,
+        category: form.category.trim(),
+        stack: form.stack
+          .split(',')
+          .map((s) => s.trim())
+          .filter(Boolean),
+        description: form.description.trim(),
+        compensation: form.compensation.trim() || undefined,
         postedAt: Date.now(),
         expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
       });
-      router.push('/');
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
+      await revalidateAndRedirectHome();
+    } catch (err: unknown) {
+      if (err instanceof Error && err.message === 'NEXT_REDIRECT') {
+        setLoading(false);
+        throw err;
+      }
+      setError(err instanceof Error ? err.message : 'Failed to post job');
     }
-  }
-
-  if (!isConnected) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-gray-500 mb-4">Connect your wallet to post a job.</p>
-        <button
-          onClick={connect}
-          className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-6 py-3 rounded-lg"
-        >
-          Connect Wallet
-        </button>
-      </div>
-    );
+    setLoading(false);
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-8 flex flex-col gap-5">
-      <input
-        name="title"
-        placeholder="Job Title"
-        value={form.title}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <input
-        name="company"
-        placeholder="Company"
-        value={form.company}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <input
-        name="location"
-        placeholder="Location (e.g. Remote, Berlin)"
-        value={form.location}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <label className="flex items-center gap-3 text-sm text-gray-600">
-        <input
-          type="checkbox"
-          name="remote"
-          checked={form.remote}
-          onChange={handleChange}
-          className="w-4 h-4 accent-purple-600"
-        />
-        Remote position
-      </label>
-      <select
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      >
-        <option value="engineering">Engineering</option>
-        <option value="devrel">Developer Relations</option>
-        <option value="research">Research</option>
-        <option value="design">Design</option>
-        <option value="other">Other</option>
-      </select>
-      <input
-        name="stack"
-        placeholder="Stack (comma separated: typescript, go, solidity)"
-        value={form.stack}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <input
-        name="compensation"
-        placeholder="Compensation (optional: $120k - $150k)"
-        value={form.compensation}
-        onChange={handleChange}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500"
-      />
-      <textarea
-        name="description"
-        placeholder="Job description..."
-        value={form.description}
-        onChange={handleChange}
-        rows={6}
-        className="border border-gray-200 rounded-lg px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-purple-500 resize-none"
-      />
-      <button
-        onClick={handleSubmit}
-        disabled={loading}
-        className="bg-purple-600 hover:bg-purple-700 disabled:opacity-50 text-white font-medium px-6 py-3 rounded-lg transition-colors"
-      >
-        {loading ? 'Posting...' : 'Post Job'}
-      </button>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Post a Job</h2>
+        <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+          ← Back
+        </Link>
+      </div>
+
+      {!walletLoading && !isConnected && (
+        <div className="rounded-lg bg-yellow-50 border border-yellow-200 px-4 py-3 text-sm text-yellow-800">
+          Please connect your wallet to post a job.
+        </div>
+      )}
+
+      {error && (
+        <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-800">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Field label="Job title" htmlFor="title">
+          <input
+            id="title"
+            name="title"
+            type="text"
+            placeholder="e.g. Solidity Engineer"
+            className={input()}
+            value={form.title}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <Field label="Company" htmlFor="company">
+          <input
+            id="company"
+            name="company"
+            type="text"
+            placeholder="e.g. Acme Labs"
+            className={input()}
+            value={form.company}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <Field label="Location" htmlFor="location">
+          <input
+            id="location"
+            name="location"
+            type="text"
+            placeholder="e.g. Berlin, Worldwide"
+            className={input()}
+            value={form.location}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
+          <input
+            type="checkbox"
+            name="remote"
+            checked={form.remote}
+            onChange={handleChange}
+            className="w-4 h-4 accent-purple-600"
+          />
+          This is a remote/hybrid position
+        </label>
+
+        <Field label="Category" htmlFor="category">
+          <input
+            id="category"
+            name="category"
+            type="text"
+            placeholder="e.g. Engineering, DevRel"
+            className={input()}
+            value={form.category}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <Field label="Stack" htmlFor="stack">
+          <input
+            id="stack"
+            name="stack"
+            type="text"
+            placeholder="e.g. Rust, Go, Solidity (comma separated)"
+            className={input()}
+            value={form.stack}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <Field label="Compensation" htmlFor="compensation">
+          <input
+            id="compensation"
+            name="compensation"
+            type="text"
+            placeholder="e.g. $120k–$160k (optional)"
+            className={input()}
+            value={form.compensation}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <Field label="Description" htmlFor="description">
+          <textarea
+            id="description"
+            name="description"
+            placeholder="Role overview, responsibilities..."
+            className={input('h-32 resize-none')}
+            value={form.description}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
+
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className="w-full py-2.5 rounded-lg bg-purple-600 text-white text-sm font-medium
+                     hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed
+                     transition-colors flex items-center justify-center gap-2"
+        >
+          {loading ? (
+            <svg
+              className="animate-spin h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8z"
+              />
+            </svg>
+          ) : (
+            'Post Job'
+          )}
+        </button>
+      </form>
     </div>
   );
 }
+
+function Field({
+  label,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={htmlFor} className="text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
+
+const input = (extra = '') =>
+  `w-full px-3 py-2 rounded-lg border border-gray-300 text-sm bg-white
+   focus:outline-none focus:ring-2 focus:ring-purple-400
+   disabled:opacity-50 disabled:cursor-not-allowed ${extra}`;

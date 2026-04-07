@@ -1,0 +1,54 @@
+'use client';
+
+import { kaolin } from '@arkiv-network/sdk/chains';
+import {
+  Chain,
+  getDefaultConfig,
+  lightTheme,
+  RainbowKitProvider,
+} from '@rainbow-me/rainbowkit';
+import { injectedWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import type React from 'react';
+import { WagmiProvider } from 'wagmi';
+
+export const config = getDefaultConfig({
+  appName: 'JobsArchive',
+  projectId: 'JA_LEON_TASK',
+  chains: [kaolin as unknown as Chain],
+  ssr: true,
+  wallets: (() => {
+    return [
+      {
+        groupName: 'Recommended',
+        wallets:
+          typeof window === 'undefined'
+            ? [injectedWallet]
+            : [injectedWallet, metaMaskWallet],
+      },
+    ];
+  })(),
+});
+
+const queryClient = new QueryClient();
+
+const rainbowKitTheme = {
+  ...lightTheme({
+    accentColor: 'var(--color-primary)',
+  }),
+  fonts: {
+    body: 'var(--default-font-family)',
+  },
+};
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <RainbowKitProvider theme={rainbowKitTheme}>
+          {children}
+        </RainbowKitProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
+  );
+}

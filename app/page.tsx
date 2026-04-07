@@ -1,15 +1,11 @@
 import { getJobs } from '@/lib/read-jobs';
 import JobList from '@/components/JobList';
-import Navbar from '@/components/Navbar';
 
 export default async function Home() {
   const jobs = await getJobs();
 
   return (
     <main className="min-h-screen bg-slate-50">
-      {/* Navbar */}
-      <Navbar />
-
       {/* Hero */}
       <div className="bg-white border-b border-gray-200 px-6 py-12">
         <div className="max-w-6xl mx-auto">

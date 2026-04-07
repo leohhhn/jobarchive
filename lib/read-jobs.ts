@@ -1,10 +1,10 @@
 import { eq } from '@arkiv-network/sdk/query';
 
 import { JobPosting, PROJECT_ATTRIBUTE } from './types';
-import { publicClient } from './arkiv-client';
+import { arkivPublicClient } from './arkiv-client';
 
 export async function getJobs(): Promise<JobPosting[]> {
-  const results = await publicClient
+  const results = await arkivPublicClient
     .buildQuery()
     .where([
       eq('type', 'job'),

@@ -1,18 +1,33 @@
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils';
 import { JobPosting, PROJECT_ATTRIBUTE } from './types';
-import { type WalletClient } from '@arkiv-network/sdk';
+import type { Connector } from 'wagmi';
+import { kaolin } from '@arkiv-network/sdk/chains';
+import {
+  EIP1193Provider,
+  createWalletClient,
+  custom,
+} from '@arkiv-network/sdk';
 
 export async function createJob(
-  walletClient: WalletClient,
+  connector: Connector,
+  address: `0x${string}`,
   job: Omit<JobPosting, 'id' | 'author'>,
-): Promise<string> {
-  const { entityKey } = await walletClient.createEntity({
+): Promise<{ entityKey: string; txHash: string }> {
+  const provider = (await connector.getProvider()) as EIP1193Provider;
+
+  const walletClient = createWalletClient({
+    chain: kaolin,
+    transport: custom(provider),
+    account: address,
+  });
+
+  const { entityKey, txHash } = await walletClient.createEntity({
     payload: jsonToPayload({
       title: job.title,
       company: job.company,
       description: job.description,
       compensation: job.compensation ?? null,
-      author: walletClient.account?.address,
+      author: address,
     }),
     contentType: 'application/json',
     attributes: [
@@ -29,7 +44,5 @@ export async function createJob(
     expiresIn: ExpirationTime.fromDays(30),
   });
 
-  return entityKey;
+  return { entityKey, txHash };
 }
-
-// ---- read ----
