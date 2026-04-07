@@ -14,6 +14,7 @@ export default function JobForm() {
 
   const walletLoading = !mounted() || isConnecting || isReconnecting;
 
+  const [txHash, setTxHash] = useState<string | null>(null);
   const [form, setForm] = useState({
     title: '',
     company: '',
@@ -45,14 +46,14 @@ export default function JobForm() {
     }));
   }
 
-  async function handleSubmit(e: React.SubmitEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!canSubmit || !connector || !address) return;
 
     setLoading(true);
     setError(null);
     try {
-      await createJob(connector, address, {
+      const { txHash } = await createJob(connector, address, {
         title: form.title.trim(),
         company: form.company.trim(),
         location: form.location.trim(),
@@ -67,15 +68,68 @@ export default function JobForm() {
         postedAt: Date.now(),
         expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000,
       });
-      await revalidateAndRedirectHome();
+      setTxHash(txHash);
     } catch (err: unknown) {
-      if (err instanceof Error && err.message === 'NEXT_REDIRECT') {
-        setLoading(false);
-        throw err;
-      }
       setError(err instanceof Error ? err.message : 'Failed to post job');
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  }
+
+  if (txHash) {
+    return (
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Post a Job</h2>
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+            ← Back
+          </Link>
+        </div>
+        <div className="rounded-lg bg-green-50 border border-green-200 px-6 py-5 flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <svg
+              className="w-5 h-5 text-green-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <p className="font-medium text-green-800">
+              Job posted successfully!
+            </p>
+          </div>
+          <div className="flex flex-col gap-1">
+            <p className="text-xs text-green-700 font-medium">
+              Transaction hash
+            </p>
+            <p className="font-mono text-xs break-all text-green-800 bg-green-100 px-3 py-2 rounded-lg">
+              {txHash}
+            </p>
+          </div>
+          <a
+            href={`https://explorer.kaolin.hoodi.arkiv.network/tx/${txHash}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-green-700 underline hover:text-green-900"
+          >
+            View on Kaolin Explorer →
+          </a>
+          <button
+            onClick={() => revalidateAndRedirectHome()}
+            className="mt-1 w-full py-2.5 rounded-lg bg-purple-600 text-white text-sm
+                     font-medium hover:bg-purple-700 transition-colors"
+          >
+            Back to listings
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

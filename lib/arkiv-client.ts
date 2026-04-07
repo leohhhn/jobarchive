@@ -5,7 +5,6 @@ import {
   custom,
   type WalletClient,
   type PublicClient,
-  PublicArkivClient,
 } from '@arkiv-network/sdk';
 import { privateKeyToAccount } from '@arkiv-network/sdk/accounts';
 import { kaolin } from '@arkiv-network/sdk/chains';

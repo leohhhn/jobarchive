@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { JobPosting } from '@/lib/types';
 import JobCard from './JobCard';
 
@@ -17,7 +18,9 @@ export default function JobList({ jobs }: JobListProps) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {jobs.map((job) => (
-        <JobCard key={job.id} job={job} />
+        <Link key={job.id} href={`/job/${job.id}`}>
+          <JobCard job={job} />
+        </Link>
       ))}
     </div>
   );

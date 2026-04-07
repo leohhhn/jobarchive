@@ -14,7 +14,7 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto flex justify-between items-center">
         <div>
           <Link href="/">
-            <span className="font-bold text-gray-900 text-lg">Web3 Jobs</span>
+            <span className="font-bold text-gray-900 text-lg">Job Archive</span>
           </Link>
           <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">
             powered by Arkiv
