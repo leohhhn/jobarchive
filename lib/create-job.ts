@@ -13,6 +13,7 @@ import {
  * Creates a new job posting on Arkiv. The job will be
  * associated with the provided Ethereum address, which will be the author of the job posting.
  */
+
 export async function createJob(
   connector: Connector,
   address: `0x${string}`,
@@ -30,6 +31,8 @@ export async function createJob(
     payload: jsonToPayload({
       title: job.title,
       company: job.company,
+      location: job.location,
+      stack: job.stack,
       description: job.description,
       author: address,
       applyUrl: job.applyUrl,
@@ -39,10 +42,7 @@ export async function createJob(
       PROJECT_ATTRIBUTE,
       { key: 'type', value: 'job' },
       { key: 'category', value: job.category },
-      { key: 'company', value: job.company },
-      { key: 'location', value: job.location },
       { key: 'remote', value: job.remote ? 'true' : 'false' },
-      { key: 'stack', value: job.stack.join(',') },
       { key: 'postedAt', value: Date.now() },
       ...(job.compMin !== undefined
         ? [{ key: 'compMin', value: job.compMin }]
