@@ -4,12 +4,11 @@ import { kaolin } from '@arkiv-network/sdk/chains';
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils';
 import * as dotenv from 'dotenv';
 import { PROJECT_ATTRIBUTE } from '../lib/types';
+import { faker } from '@faker-js/faker';
 
 dotenv.config({ path: '../.env.local' });
 
 // This is a simple script with some mock data for dev purposes
-
-import { faker } from '@faker-js/faker';
 
 type Job = {
   title: string;
