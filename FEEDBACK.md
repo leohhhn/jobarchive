@@ -12,6 +12,8 @@ I would recommend keeping a README.md version of the litepaper on GitHub - espec
 - The Pectra upgrade has already shipped, so references to it as upcoming are outdated.
 - etc
 
+IMHO, listing "Developer Docs" on the home page instead of the "Read Litepaper" would be a better approach to devs and users.
+
 ---
 
 ## Explorer & Faucet
