@@ -27,6 +27,7 @@ export default function JobForm() {
     location: '',
     remote: false,
     category: '',
+    categoryOther: '',
     stack: '',
     description: '',
     compMin: '',
@@ -77,7 +78,7 @@ export default function JobForm() {
         company: form.company.trim(),
         location: form.location.trim(),
         remote: form.remote,
-        category: form.category.trim(),
+        category: (form.category === 'Other' ? form.categoryOther : form.category).trim(),
         stack: form.stack
           .split(',')
           .map((s) => s.trim())
@@ -291,22 +292,31 @@ export default function JobForm() {
           This is a remote/hybrid position
         </label>
         <Field label="Category" htmlFor="category">
-          <input
+          <select
             id="category"
             name="category"
-            type="text"
-            list="category-suggestions"
-            placeholder="e.g. Engineering, DevRel"
             className={input()}
             value={form.category}
             onChange={handleChange}
             disabled={loading}
-          />
-          <datalist id="category-suggestions">
+          >
+            <option value="">Select a category</option>
             {JOB_CATEGORIES.map((c) => (
-              <option key={c} value={c} />
+              <option key={c} value={c}>{c}</option>
             ))}
-          </datalist>
+          </select>
+          {form.category === "Other" && (
+            <input
+              id="categoryOther"
+              name="categoryOther"
+              type="text"
+              placeholder="Please specify"
+              className={input()}
+              value={form.categoryOther ?? ""}
+              onChange={handleChange}
+              disabled={loading}
+            />
+          )}
         </Field>
         <Field label="Stack" htmlFor="stack">
           <input

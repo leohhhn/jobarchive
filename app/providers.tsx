@@ -1,5 +1,6 @@
 'use client';
 
+import { PROJECT_ATTRIBUTE } from '@/lib/types';
 import { kaolin } from '@arkiv-network/sdk/chains';
 import {
   Chain,
@@ -14,7 +15,7 @@ import { WagmiProvider } from 'wagmi';
 
 export const config = getDefaultConfig({
   appName: 'JobsArchive',
-  projectId: 'JA_LEON_TASK',
+  projectId: PROJECT_ATTRIBUTE.value,
   chains: [kaolin as unknown as Chain],
   ssr: true,
   wallets: (() => {

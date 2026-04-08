@@ -15,7 +15,10 @@ interface ArkivEntity {
 
 /** Returns days remaining until expiry, clamped to 0 for already-expired listings. */
 export function daysUntilExpiry(expiresAt: number): number {
-  return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
+  return Math.max(
+    0,
+    Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)),
+  );
 }
 
 /**
@@ -49,7 +52,7 @@ export function parseJobEntity(
     description: payload.description,
     author: payload.author,
     category: attrs.category as string,
-    location: attrs.location as string,
+    location: payload.location as string,
     remote: attrs.remote === 'true',
     stack: (attrs.stack as string)?.split(',').filter(Boolean) ?? [],
     postedAt: Number(attrs.postedAt),
