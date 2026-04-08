@@ -1,6 +1,6 @@
-import { Currency, JobPosting, PROJECT_ATTRIBUTE } from './types';
+import { JobPosting, PROJECT_ATTRIBUTE } from './types';
 import { arkivPublicClient } from './arkiv-client';
-
+import { parseJobEntity } from './parse-job';
 import { eq } from '@arkiv-network/sdk/query';
 
 export interface JobFilters {
@@ -28,43 +28,12 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
     query.where(eq('category', filters.category));
   }
 
-  const results = await query.fetch();
-  const timing = await arkivPublicClient.getBlockTiming();
-  const currentBlock = Number(timing.currentBlock);
-  const currentBlockTime = Number(timing.currentBlockTime);
-  const blockDuration = Number(timing.blockDuration);
+  const [results, timing] = await Promise.all([
+    query.fetch(),
+    arkivPublicClient.getBlockTiming(),
+  ]);
 
   return results.entities
-    .map((entity) => {
-      const attrs = Object.fromEntries(
-        (entity.attributes ?? []).map((a) => [a.key, a.value]),
-      );
-      const payload = entity.toJson();
-
-      const expiresAt =
-        (currentBlockTime +
-          (Number(entity.expiresAtBlock) - currentBlock) * blockDuration) *
-        1000;
-
-      return {
-        id: entity.key,
-        title: payload.title,
-        company: payload.company,
-        description: payload.description,
-        author: payload.author,
-        category: attrs.category as string,
-        location: attrs.location as string,
-        remote: attrs.remote === 'true',
-        stack: (attrs.stack as string)?.split(',').filter(Boolean) ?? [],
-        postedAt: Number(attrs.postedAt),
-        expiresAt: expiresAt,
-        compMin:
-          attrs.compMin !== undefined ? Number(attrs.compMin) : undefined,
-        compMax:
-          attrs.compMax !== undefined ? Number(attrs.compMax) : undefined,
-        compCurrency: attrs.compCurrency as Currency | undefined,
-        applyUrl: payload.applyUrl,
-      };
-    })
+    .map((entity) => parseJobEntity(entity, timing))
     .sort((a, b) => b.postedAt - a.postedAt);
 }

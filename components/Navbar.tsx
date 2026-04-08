@@ -40,7 +40,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          {mounted() && isConnected && (
+          {mounted && isConnected && (
             <Link
               href="/new"
               style={{ backgroundColor: 'var(--arkiv-orange)' }}

@@ -1,3 +1,14 @@
+export const PROJECT_ATTRIBUTE = {
+  key: 'project',
+  value: 'JobArchiveTest3',
+};
+
+if (!PROJECT_ATTRIBUTE.value) {
+  throw new Error(
+    'Please set the value of PROJECT_ATTRIBUTE to a unique string that identifies your project. This will help you filter and manage your entities on the Arkiv network.',
+  );
+}
+
 export interface JobPosting {
   id: string;
   title: string;
@@ -16,21 +27,6 @@ export interface JobPosting {
   compCurrency?: Currency;
   applyUrl: string;
 }
-export const PROJECT_ATTRIBUTE = {
-  key: 'project',
-  value: 'JobArchiveTest2',
-};
-
-export const JOB_CATEGORIES = [
-  'Engineering',
-  'DevRel',
-  'Research',
-  'Design',
-  'Product',
-  'Other',
-] as const;
-
-export type JobCategory = (typeof JOB_CATEGORIES)[number];
 
 export interface JobSearchProps {
   jobs: JobPosting[];
@@ -54,3 +50,14 @@ export const COMP_RANGES = [
   { label: '$100k – $150k', min: 100000, max: 150000 },
   { label: '$150k+', min: 150000, max: null },
 ] as const;
+
+export const JOB_CATEGORIES = [
+  'Engineering',
+  'DevRel',
+  'Research',
+  'Design',
+  'Product',
+  'Other',
+] as const;
+
+export type JobCategory = (typeof JOB_CATEGORIES)[number];

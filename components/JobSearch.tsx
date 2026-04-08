@@ -94,7 +94,7 @@ export default function JobSearch({ jobs, categories }: JobSearchProps) {
             value={text}
             onChange={(e) => setText(e.target.value)}
             className="w-full pl-9 pr-4 py-2 rounded-lg border text-sm bg-white
-                       focus:outline-none focus:ring-2 focus:ring-blue-200"
+                       focus:outline-none focus:ring-2 focus:ring-[#181EA940]"
             style={{ borderColor: 'var(--arkiv-stone)' }}
           />
         </div>
@@ -104,7 +104,7 @@ export default function JobSearch({ jobs, categories }: JobSearchProps) {
           value={activeCategory}
           onChange={(e) => updateParams({ category: e.target.value || null })}
           className="px-3 py-2 rounded-lg border text-sm bg-white
-                     focus:outline-none focus:ring-2 focus:ring-blue-200"
+                     focus:outline-none focus:ring-2 focus:ring-[#181EA940]"
           style={{ borderColor: 'var(--arkiv-stone)' }}
         >
           <option value="">All categories</option>

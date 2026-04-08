@@ -1,13 +1,7 @@
-// app/hooks/useIsMounted.ts
-import { useEffect, useRef } from 'react';
+import { useSyncExternalStore } from 'react';
+
+const subscribe = () => () => {};
 
 export function useIsMounted() {
-  const mounted = useRef(false);
-  useEffect(() => {
-    mounted.current = true;
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
-  return () => mounted.current;
+  return useSyncExternalStore(subscribe, () => true, () => false);
 }

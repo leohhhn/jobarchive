@@ -18,7 +18,7 @@ export default function JobForm() {
     useAccount();
   const mounted = useIsMounted();
 
-  const walletLoading = !mounted() || isConnecting || isReconnecting;
+  const walletLoading = !mounted || isConnecting || isReconnecting;
 
   const [txHash, setTxHash] = useState<string | null>(null);
   const [form, setForm] = useState({
@@ -39,11 +39,17 @@ export default function JobForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const compError =
+    form.compMin && form.compMax && Number(form.compMin) > Number(form.compMax)
+      ? 'Min compensation cannot be greater than max'
+      : null;
+
   const canSubmit =
     isConnected &&
     form.title.trim() &&
     form.company.trim() &&
     form.description.trim() &&
+    !compError &&
     !loading;
 
   function handleChange(
@@ -356,9 +362,13 @@ export default function JobForm() {
               disabled={loading}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1">
-            Leave blank if not specified
-          </p>
+          {compError ? (
+            <p className="text-xs text-red-500 mt-1">{compError}</p>
+          ) : (
+            <p className="text-xs text-gray-400 mt-1">
+              Leave blank if not specified
+            </p>
+          )}
         </Field>
         <Field label="Description" htmlFor="description">
           <textarea

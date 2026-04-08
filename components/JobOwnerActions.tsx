@@ -4,12 +4,7 @@ import { useState } from 'react';
 import { useAccount } from 'wagmi';
 import { useRouter } from 'next/navigation';
 import { extendJob, deleteJob } from '@/lib/job-actions';
-
-const EXTEND_OPTIONS = [
-  { label: '7 days', days: 7 },
-  { label: '14 days', days: 14 },
-  { label: '30 days', days: 30 },
-] as const;
+import { EXPIRY_OPTIONS } from '@/lib/types';
 
 export default function JobOwnerActions({
   jobId,
@@ -89,7 +84,7 @@ export default function JobOwnerActions({
           Add more time to keep this listing active.
         </p>
         <div className="flex gap-2">
-          {EXTEND_OPTIONS.map(({ label, days }) => (
+          {EXPIRY_OPTIONS.map(({ label, days }) => (
             <button
               key={days}
               onClick={() => handleExtend(days)}

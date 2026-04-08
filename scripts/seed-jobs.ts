@@ -3,9 +3,11 @@ import { privateKeyToAccount } from '@arkiv-network/sdk/accounts';
 import { kaolin } from '@arkiv-network/sdk/chains';
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils';
 import * as dotenv from 'dotenv';
-import { PROJECT_ATTRIBUTE } from './lib/types';
+import { PROJECT_ATTRIBUTE } from '../lib/types';
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: '../.env.local' });
+
+// This is a simple script with some mock data for dev purposes
 
 const JOBS = [
   {
@@ -243,6 +245,9 @@ async function main() {
   try {
     const results = await walletClient.mutateEntities({ creates });
     console.log(`Done! ${JOBS.length} jobs seeded in one transaction.`);
+    results.createdEntities.forEach((entity, idx) => {
+      console.log(`- ${JOBS[idx].title} at ${JOBS[idx].company}`);
+    });
   } catch (err) {
     console.error('Batch failed:', err);
   }

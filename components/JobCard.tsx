@@ -1,7 +1,7 @@
 import { JobPosting } from '@/lib/types';
 
 function daysUntilExpiry(expiresAt: number): number {
-  return Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
 }
 
 export default function JobCard({ job }: { job: JobPosting }) {
@@ -39,9 +39,21 @@ export default function JobCard({ job }: { job: JobPosting }) {
         )}
       </div>
 
-      {/* Location */}
-      <div className="flex gap-2 mb-3 items-center">
+      {/* Location + category */}
+      <div className="flex gap-2 mb-3 items-center flex-wrap">
         <span className="text-sm text-gray-500">{job.location}</span>
+        {job.category && (
+          <span
+            style={{
+              backgroundColor: '#FE744620',
+              color: 'var(--arkiv-orange)',
+              border: '1px solid #FE744640',
+            }}
+            className="text-xs px-2 py-0.5 rounded-full font-medium"
+          >
+            {job.category}
+          </span>
+        )}
         {job.remote && (
           <span
             style={{
