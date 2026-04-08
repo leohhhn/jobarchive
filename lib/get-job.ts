@@ -1,5 +1,5 @@
 import { arkivPublicClient } from './arkiv-client';
-import { JobPosting } from './types';
+import { Currency, JobPosting } from './types';
 
 export async function getJob(id: string): Promise<JobPosting | null> {
   try {
@@ -16,7 +16,6 @@ export async function getJob(id: string): Promise<JobPosting | null> {
       title: payload.title,
       company: payload.company,
       description: payload.description,
-      compensation: payload.compensation ?? undefined,
       author: payload.author,
       category: attrs.category as string,
       location: attrs.location as string,
@@ -24,6 +23,10 @@ export async function getJob(id: string): Promise<JobPosting | null> {
       stack: (attrs.stack as string)?.split(',').filter(Boolean) ?? [],
       postedAt: Number(attrs.postedAt),
       expiresAt: Number(attrs.expiresAt),
+      compMin: attrs.compMin !== undefined ? Number(attrs.compMin) : undefined,
+      compMax: attrs.compMax !== undefined ? Number(attrs.compMax) : undefined,
+      compCurrency: attrs.compCurrency as Currency | undefined,
+      applyUrl: payload.applyUrl,
     };
   } catch (err) {
     console.error(`Failed to fetch job ${id}:`, err);

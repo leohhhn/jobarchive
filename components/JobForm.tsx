@@ -34,6 +34,7 @@ export default function JobForm() {
     compCurrency: 'USD' as Currency,
     expiryDays: 30 as number,
     customExpiry: false,
+    applyUrl: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -80,6 +81,7 @@ export default function JobForm() {
         compMax: form.compMax ? Number(form.compMax) : undefined,
         compCurrency: form.compCurrency,
         postedAt: Date.now(),
+        applyUrl: form.applyUrl.trim(),
         expiresAt: Date.now() + form.expiryDays * 24 * 60 * 60 * 1000,
       });
       setTxHash(txHash);
@@ -180,7 +182,6 @@ export default function JobForm() {
             disabled={loading}
           />
         </Field>
-
         <Field label="Company" htmlFor="company">
           <input
             id="company"
@@ -193,7 +194,6 @@ export default function JobForm() {
             disabled={loading}
           />
         </Field>
-
         <Field label="Location" htmlFor="location">
           <input
             id="location"
@@ -261,6 +261,18 @@ export default function JobForm() {
           </div>
         </Field>
 
+        <Field label="Application link" htmlFor="applyUrl">
+          <input
+            id="applyUrl"
+            name="applyUrl"
+            type="url"
+            placeholder="e.g. https://jobs.company.com/apply"
+            className={input()}
+            value={form.applyUrl}
+            onChange={handleChange}
+            disabled={loading}
+          />
+        </Field>
         <label className="flex items-center gap-3 text-sm text-gray-600 cursor-pointer">
           <input
             type="checkbox"
@@ -271,7 +283,6 @@ export default function JobForm() {
           />
           This is a remote/hybrid position
         </label>
-
         <Field label="Category" htmlFor="category">
           <input
             id="category"
@@ -290,7 +301,6 @@ export default function JobForm() {
             ))}
           </datalist>
         </Field>
-
         <Field label="Stack" htmlFor="stack">
           <input
             id="stack"
@@ -303,7 +313,6 @@ export default function JobForm() {
             disabled={loading}
           />
         </Field>
-
         <Field label="Compensation" htmlFor="compMin">
           <div className="flex gap-2 items-center">
             <select
@@ -359,7 +368,6 @@ export default function JobForm() {
             disabled={loading}
           />
         </Field>
-
         <button
           type="submit"
           disabled={!canSubmit}

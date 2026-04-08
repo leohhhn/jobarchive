@@ -54,6 +54,7 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
         compMax:
           attrs.compMax !== undefined ? Number(attrs.compMax) : undefined,
         compCurrency: attrs.compCurrency as Currency | undefined,
+        applyUrl: payload.applyUrl,
       };
     })
     .sort((a, b) => b.postedAt - a.postedAt);

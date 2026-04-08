@@ -14,10 +14,11 @@ export interface JobPosting {
   compMin?: number;
   compMax?: number;
   compCurrency?: Currency;
+  applyUrl: string;
 }
 export const PROJECT_ATTRIBUTE = {
   key: 'project',
-  value: 'JobArchiveTest1',
+  value: 'JobArchiveTest2',
 };
 
 export const JOB_CATEGORIES = [

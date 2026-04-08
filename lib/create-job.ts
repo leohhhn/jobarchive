@@ -27,6 +27,7 @@ export async function createJob(
       company: job.company,
       description: job.description,
       author: address,
+      applyUrl: job.applyUrl,
     }),
     contentType: 'application/json',
     attributes: [

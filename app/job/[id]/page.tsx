@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { getJob } from '@/lib/get-job';
-import JobNotFound from './not-found';
+
+import { notFound } from 'next/navigation';
 
 function daysUntilExpiry(expiresAt: number): number {
   return Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
@@ -13,13 +14,27 @@ export default async function JobPage({
 }) {
   const { id } = await params;
   const job = await getJob(id as `0x${string}`);
-  if (!job) return JobNotFound();
+  if (!job) notFound();
 
   const days = daysUntilExpiry(job.expiresAt);
   const isExpiringSoon = days < 7;
 
+  const compLabel =
+    job.compMin || job.compMax
+      ? `${job.compCurrency} ${
+          job.compMin && job.compMax
+            ? `${(job.compMin / 1000).toFixed(0)}k – ${(job.compMax / 1000).toFixed(0)}k`
+            : job.compMin
+              ? `${(job.compMin / 1000).toFixed(0)}k+`
+              : `Up to ${(job.compMax! / 1000).toFixed(0)}k`
+        }`
+      : null;
+
   return (
-    <main className="min-h-screen bg-slate-50">
+    <main
+      className="min-h-screen"
+      style={{ backgroundColor: 'var(--arkiv-sand)' }}
+    >
       <div className="max-w-3xl mx-auto px-6 py-10 space-y-5">
         <Link
           href="/"
@@ -42,29 +57,55 @@ export default async function JobPage({
         </Link>
 
         {/* Header */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-8">
+        <div
+          className="bg-white border rounded-2xl p-8"
+          style={{ borderColor: 'var(--arkiv-stone)' }}
+        >
           <div className="flex justify-between items-start gap-6">
             <div className="space-y-1.5">
-              <h1 className="text-2xl font-bold text-gray-900">{job.title}</h1>
+              <h1
+                className="text-2xl font-bold"
+                style={{ color: 'var(--arkiv-ink)' }}
+              >
+                {job.title}
+              </h1>
               <p className="text-gray-500 font-medium">{job.company}</p>
-              {job.compensation && (
-                <p className="text-green-600 font-semibold text-lg">
-                  {job.compensation}
+              {compLabel && (
+                <p
+                  className="font-semibold text-lg"
+                  style={{ color: 'var(--arkiv-orange)' }}
+                >
+                  {compLabel}
                 </p>
               )}
             </div>
             <div className="flex flex-col items-end gap-2 shrink-0 pt-1">
               {job.remote && (
-                <span className="text-xs font-medium bg-purple-100 text-purple-700 px-3 py-1 rounded-full">
+                <span
+                  className="text-xs font-medium px-3 py-1 rounded-full"
+                  style={{
+                    backgroundColor: '#181EA915',
+                    color: 'var(--arkiv-blue)',
+                    border: '1px solid #181EA930',
+                  }}
+                >
                   Remote
                 </span>
               )}
               <span
-                className={`text-xs font-medium px-3 py-1 rounded-full ${
+                className="text-xs font-medium px-3 py-1 rounded-full"
+                style={
                   isExpiringSoon
-                    ? 'bg-red-50 text-red-500'
-                    : 'bg-gray-100 text-gray-400'
-                }`}
+                    ? {
+                        backgroundColor: '#fff0ed',
+                        color: 'var(--arkiv-orange)',
+                      }
+                    : {
+                        backgroundColor: 'var(--arkiv-stone)',
+                        color: 'var(--arkiv-ink)',
+                        opacity: 0.6,
+                      }
+                }
               >
                 {isExpiringSoon
                   ? `⚠ Expires in ${days}d`
@@ -74,7 +115,10 @@ export default async function JobPage({
           </div>
 
           {/* Meta */}
-          <div className="flex flex-wrap gap-x-6 gap-y-2 mt-6 pt-6 border-t border-gray-100">
+          <div
+            className="flex flex-wrap gap-x-6 gap-y-2 mt-6 pt-6 border-t"
+            style={{ borderColor: 'var(--arkiv-stone)' }}
+          >
             <Meta
               icon={
                 <svg
@@ -142,7 +186,10 @@ export default async function JobPage({
 
         {/* Stack */}
         {job.stack.length > 0 && (
-          <div className="bg-white border border-gray-200 rounded-2xl p-6">
+          <div
+            className="bg-white border rounded-2xl p-6"
+            style={{ borderColor: 'var(--arkiv-stone)' }}
+          >
             <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
               Tech Stack
             </h2>
@@ -150,7 +197,11 @@ export default async function JobPage({
               {job.stack.map((tag) => (
                 <span
                   key={tag}
-                  className="text-sm bg-gray-50 border border-gray-200 text-gray-600 px-3 py-1.5 rounded-lg font-medium"
+                  className="text-sm px-3 py-1.5 rounded-lg font-medium"
+                  style={{
+                    backgroundColor: 'var(--arkiv-stone)',
+                    color: 'var(--arkiv-ink)',
+                  }}
                 >
                   {tag}
                 </span>
@@ -160,7 +211,10 @@ export default async function JobPage({
         )}
 
         {/* Description */}
-        <div className="bg-white border border-gray-200 rounded-2xl p-6">
+        <div
+          className="bg-white border rounded-2xl p-6"
+          style={{ borderColor: 'var(--arkiv-stone)' }}
+        >
           <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4">
             About the role
           </h2>
@@ -168,6 +222,20 @@ export default async function JobPage({
             {job.description}
           </p>
         </div>
+
+        {/* Apply */}
+        {job.applyUrl && (
+          <a
+            href={job.applyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full py-3.5 rounded-xl text-white text-sm font-semibold
+                       text-center transition-opacity hover:opacity-90"
+            style={{ backgroundColor: 'var(--arkiv-orange)' }}
+          >
+            Apply for this role →
+          </a>
+        )}
 
         {/* Footer */}
         <div className="flex items-center justify-between text-xs text-gray-400 px-1 pb-4">

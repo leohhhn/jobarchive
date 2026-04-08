@@ -21,6 +21,7 @@ const JOBS = [
     compMax: 220000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://boards.greenhouse.io/uniswaplabs',
   },
   {
     title: 'Developer Relations Engineer',
@@ -35,6 +36,7 @@ const JOBS = [
     compMax: 130000,
     compCurrency: 'USD',
     expiryDays: 14,
+    applyUrl: 'https://golem.network/careers',
   },
   {
     title: 'Protocol Researcher',
@@ -49,6 +51,7 @@ const JOBS = [
     compMax: 160000,
     compCurrency: 'EUR',
     expiryDays: 60,
+    applyUrl: 'https://ethereum.org/en/community/grants/',
   },
   {
     title: 'Frontend Engineer',
@@ -63,6 +66,7 @@ const JOBS = [
     compMax: 140000,
     compCurrency: 'GBP',
     expiryDays: 30,
+    applyUrl: 'https://aave.com/careers',
   },
   {
     title: 'Go Backend Engineer',
@@ -77,6 +81,7 @@ const JOBS = [
     compMax: 200000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://chainlinklabs.com/careers',
   },
   {
     title: 'Product Designer',
@@ -91,6 +96,7 @@ const JOBS = [
     compMax: 150000,
     compCurrency: 'USD',
     expiryDays: 45,
+    applyUrl: 'https://consensys.io/open-roles',
   },
   {
     title: 'Rust Systems Engineer',
@@ -105,6 +111,7 @@ const JOBS = [
     compMax: 250000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://solana.com/community/jobs',
   },
   {
     title: 'Technical Writer',
@@ -119,6 +126,7 @@ const JOBS = [
     compMax: 100000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://polygon.technology/careers',
   },
   {
     title: 'ZK Cryptography Engineer',
@@ -133,6 +141,7 @@ const JOBS = [
     compMax: 300000,
     compCurrency: 'USD',
     expiryDays: 60,
+    applyUrl: 'https://starkware.co/career/',
   },
   {
     title: 'Product Manager',
@@ -147,6 +156,7 @@ const JOBS = [
     compMax: 180000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://jobs.lever.co/arbitrum',
   },
   {
     title: 'Smart Contract Auditor',
@@ -161,6 +171,7 @@ const JOBS = [
     compMax: 180000,
     compCurrency: 'USD',
     expiryDays: 14,
+    applyUrl: 'https://openzeppelin.com/jobs',
   },
   {
     title: 'DevRel Lead',
@@ -175,6 +186,7 @@ const JOBS = [
     compMax: 210000,
     compCurrency: 'USD',
     expiryDays: 30,
+    applyUrl: 'https://jobs.ashbyhq.com/alchemy',
   },
 ];
 
@@ -191,47 +203,49 @@ async function main() {
     account,
   });
 
-  console.log(`Seeding ${JOBS.length} jobs from ${account.address}...\n`);
+  console.log(
+    `Seeding ${JOBS.length} jobs in a single batch from ${account.address}...\n`,
+  );
 
-  for (const job of JOBS) {
-    try {
-      const postedAt = Date.now();
-      const expiresAt = postedAt + job.expiryDays * 24 * 60 * 60 * 1000;
+  const now = Date.now();
 
-      const { entityKey, txHash } = await walletClient.createEntity({
-        payload: jsonToPayload({
-          title: job.title,
-          company: job.company,
-          description: job.description,
-          author: account.address,
-        }),
-        contentType: 'application/json',
-        attributes: [
-          PROJECT_ATTRIBUTE,
-          { key: 'type', value: 'job' },
-          { key: 'category', value: job.category },
-          { key: 'company', value: job.company },
-          { key: 'location', value: job.location },
-          { key: 'remote', value: job.remote ? 'true' : 'false' },
-          { key: 'stack', value: job.stack.join(',') },
-          { key: 'postedAt', value: postedAt },
-          { key: 'expiresAt', value: expiresAt },
-          { key: 'compMin', value: job.compMin },
-          { key: 'compMax', value: job.compMax },
-          { key: 'compCurrency', value: job.compCurrency },
-        ],
-        expiresIn: ExpirationTime.fromDays(job.expiryDays),
-      });
+  const creates = JOBS.map((job) => {
+    const postedAt = now;
+    const expiresAt = postedAt + job.expiryDays * 24 * 60 * 60 * 1000;
 
-      console.log(`✓ ${job.title} @ ${job.company}`);
-      console.log(`  entity: ${entityKey}`);
-      console.log(`  tx:     ${txHash}\n`);
-    } catch (err) {
-      console.error(`✗ Failed: ${job.title} @ ${job.company}`, err);
-    }
+    return {
+      payload: jsonToPayload({
+        title: job.title,
+        company: job.company,
+        description: job.description,
+        author: account.address,
+        applyUrl: job.applyUrl,
+      }),
+      contentType: 'application/json',
+      attributes: [
+        PROJECT_ATTRIBUTE,
+        { key: 'type', value: 'job' },
+        { key: 'category', value: job.category },
+        { key: 'company', value: job.company },
+        { key: 'location', value: job.location },
+        { key: 'remote', value: job.remote ? 'true' : 'false' },
+        { key: 'stack', value: job.stack.join(',') },
+        { key: 'postedAt', value: postedAt },
+        { key: 'expiresAt', value: expiresAt },
+        { key: 'compMin', value: job.compMin },
+        { key: 'compMax', value: job.compMax },
+        { key: 'compCurrency', value: job.compCurrency },
+      ],
+      expiresIn: ExpirationTime.fromDays(job.expiryDays),
+    };
+  });
+
+  try {
+    const results = await walletClient.mutateEntities({ creates });
+    console.log(`Done! ${JOBS.length} jobs seeded in one transaction.`);
+  } catch (err) {
+    console.error('Batch failed:', err);
   }
-
-  console.log('Done!');
 }
 
 main().catch(console.error);
