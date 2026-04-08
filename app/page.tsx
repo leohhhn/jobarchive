@@ -40,8 +40,7 @@ export default async function Home({ searchParams }: HomeProps) {
             Find your next Web3 role
           </h1>
           <p style={{ color: 'rgba(255,255,255,0.6)' }} className="text-lg">
-            Decentralized job listings powered by Arkiv Network — no middleman,
-            no platform risk.
+            Decentralized job listings powered by Arkiv Network.
           </p>
         </div>
       </div>
