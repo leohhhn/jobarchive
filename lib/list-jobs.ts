@@ -29,6 +29,10 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
   }
 
   const results = await query.fetch();
+  const timing = await arkivPublicClient.getBlockTiming();
+  const currentBlock = Number(timing.currentBlock);
+  const currentBlockTime = Number(timing.currentBlockTime);
+  const blockDuration = Number(timing.blockDuration);
 
   return results.entities
     .map((entity) => {
@@ -36,6 +40,11 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
         (entity.attributes ?? []).map((a) => [a.key, a.value]),
       );
       const payload = entity.toJson();
+
+      const expiresAt =
+        (currentBlockTime +
+          (Number(entity.expiresAtBlock) - currentBlock) * blockDuration) *
+        1000;
 
       return {
         id: entity.key,
@@ -48,7 +57,7 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
         remote: attrs.remote === 'true',
         stack: (attrs.stack as string)?.split(',').filter(Boolean) ?? [],
         postedAt: Number(attrs.postedAt),
-        expiresAt: Number(attrs.expiresAt),
+        expiresAt: expiresAt,
         compMin:
           attrs.compMin !== undefined ? Number(attrs.compMin) : undefined,
         compMax:

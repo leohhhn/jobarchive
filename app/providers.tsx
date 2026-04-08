@@ -24,7 +24,8 @@ export const config = getDefaultConfig({
         wallets:
           typeof window === 'undefined'
             ? [injectedWallet]
-            : [injectedWallet, metaMaskWallet],
+            : // only initialize browser-specific wallets on the client side
+              [injectedWallet, metaMaskWallet],
       },
     ];
   })(),

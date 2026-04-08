@@ -1,10 +1,11 @@
 import Link from 'next/link';
 import { getJob } from '@/lib/get-job';
-
+import JobOwnerActions from '@/components/JobOwnerActions';
 import { notFound } from 'next/navigation';
 
 function daysUntilExpiry(expiresAt: number): number {
-  return Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+  const days = Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
+  return Math.max(0, days);
 }
 
 export default async function JobPage({
@@ -107,9 +108,11 @@ export default async function JobPage({
                       }
                 }
               >
-                {isExpiringSoon
-                  ? `⚠ Expires in ${days}d`
-                  : `Expires in ${days} days`}
+                {days === 0
+                  ? 'Expired'
+                  : isExpiringSoon
+                    ? `⚠ Expires in ${days}d`
+                    : `Expires in ${days} days`}
               </span>
             </div>
           </div>
@@ -236,6 +239,9 @@ export default async function JobPage({
             Apply for this role →
           </a>
         )}
+
+        {/* Owner actions */}
+        <JobOwnerActions jobId={job.id} author={job.author} />
 
         {/* Footer */}
         <div className="flex items-center justify-between text-xs text-gray-400 px-1 pb-4">

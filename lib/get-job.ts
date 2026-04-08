@@ -3,13 +3,26 @@ import { Currency, JobPosting } from './types';
 
 export async function getJob(id: string): Promise<JobPosting | null> {
   try {
-    const entity = await arkivPublicClient.getEntity(id as `0x${string}`);
+    const [entity, timing] = await Promise.all([
+      arkivPublicClient.getEntity(id as `0x${string}`),
+      arkivPublicClient.getBlockTiming(),
+    ]);
+
     if (!entity) return null;
 
     const attrs = Object.fromEntries(
       (entity.attributes ?? []).map((a) => [a.key, a.value]),
     );
     const payload = entity.toJson();
+
+    const currentBlock = Number(timing.currentBlock);
+    const currentBlockTime = Number(timing.currentBlockTime);
+    const blockDuration = Number(timing.blockDuration);
+    const expiresAtBlock = Number(entity.expiresAtBlock);
+
+    const expiresAt =
+      (currentBlockTime + (expiresAtBlock - currentBlock) * blockDuration) *
+      1000;
 
     return {
       id: entity.key,
@@ -22,7 +35,7 @@ export async function getJob(id: string): Promise<JobPosting | null> {
       remote: attrs.remote === 'true',
       stack: (attrs.stack as string)?.split(',').filter(Boolean) ?? [],
       postedAt: Number(attrs.postedAt),
-      expiresAt: Number(attrs.expiresAt),
+      expiresAt,
       compMin: attrs.compMin !== undefined ? Number(attrs.compMin) : undefined,
       compMax: attrs.compMax !== undefined ? Number(attrs.compMax) : undefined,
       compCurrency: attrs.compCurrency as Currency | undefined,

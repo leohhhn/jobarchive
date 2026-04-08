@@ -39,7 +39,6 @@ export async function createJob(
       { key: 'remote', value: job.remote ? 'true' : 'false' },
       { key: 'stack', value: job.stack.join(',') },
       { key: 'postedAt', value: Date.now() },
-      { key: 'expiresAt', value: job.expiresAt },
       ...(job.compMin !== undefined
         ? [{ key: 'compMin', value: job.compMin }]
         : []),

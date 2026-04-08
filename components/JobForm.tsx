@@ -319,7 +319,8 @@ export default function JobForm() {
               name="compCurrency"
               value={form.compCurrency}
               onChange={handleChange}
-              className={input('w-24 shrink-0')}
+              className={input()}
+              style={{ width: '90px', flexShrink: 0 }}
               disabled={loading}
             >
               {CURRENCIES.map((c) => (
@@ -340,7 +341,9 @@ export default function JobForm() {
               onChange={handleChange}
               disabled={loading}
             />
-            <span className="text-sm text-gray-400 shrink-0">–</span>
+            <span className="text-sm text-gray-400" style={{ flexShrink: 0 }}>
+              –
+            </span>
             <input
               name="compMax"
               type="number"
