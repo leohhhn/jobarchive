@@ -13,6 +13,10 @@ interface ArkivEntity {
   toJson: () => Record<string, string>;
 }
 
+export function daysUntilExpiry(expiresAt: number): number {
+  return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
+}
+
 export function parseJobEntity(
   entity: ArkivEntity,
   timing: BlockTiming,

@@ -32,7 +32,7 @@ export default function JobForm() {
     compMin: '',
     compMax: '',
     compCurrency: 'USD' as Currency,
-    expiryDays: 30 as number,
+    expiryDays: 30,
     customExpiry: false,
     applyUrl: '',
   });

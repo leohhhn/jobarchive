@@ -1,6 +1,6 @@
 import { JobPosting, PROJECT_ATTRIBUTE } from './types';
 import { arkivPublicClient } from './arkiv-client';
-import { parseJobEntity } from './parse-job';
+import { parseJobEntity } from './utils';
 import { eq } from '@arkiv-network/sdk/query';
 
 export interface JobFilters {

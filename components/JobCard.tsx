@@ -1,12 +1,9 @@
 import { JobPosting } from '@/lib/types';
-import { formatCompLabel } from '@/lib/format';
-
-function daysUntilExpiry(expiresAt: number): number {
-  return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
-}
+import { formatCompLabel, daysUntilExpiry } from '@/lib/utils';
 
 export default function JobCard({ job }: { job: JobPosting }) {
   const days = daysUntilExpiry(job.expiresAt);
+  const compLabel = formatCompLabel(job);
 
   return (
     <div
@@ -25,12 +22,12 @@ export default function JobCard({ job }: { job: JobPosting }) {
           {job.title}
         </h2>
         <p className="text-sm font-medium text-gray-600">{job.company}</p>
-        {formatCompLabel(job) && (
+        {compLabel && (
           <p
             style={{ color: 'var(--arkiv-orange)' }}
             className="text-sm font-semibold mt-1"
           >
-            {formatCompLabel(job)}
+            {compLabel}
           </p>
         )}
       </div>

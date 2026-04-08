@@ -1,5 +1,6 @@
 import { ExpirationTime, jsonToPayload } from '@arkiv-network/sdk/utils';
 import { JobPosting, PROJECT_ATTRIBUTE } from './types';
+import { daysUntilExpiry } from './utils';
 import type { Connector } from 'wagmi';
 import { kaolin } from '@arkiv-network/sdk/chains';
 import {
@@ -49,9 +50,7 @@ export async function createJob(
         ? [{ key: 'compCurrency', value: job.compCurrency }]
         : []),
     ],
-    expiresIn: ExpirationTime.fromDays(
-      Math.ceil((job.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)),
-    ),
+    expiresIn: ExpirationTime.fromDays(daysUntilExpiry(job.expiresAt)),
   });
 
   return { entityKey, txHash };

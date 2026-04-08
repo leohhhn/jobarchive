@@ -1,6 +1,6 @@
 import { arkivPublicClient } from './arkiv-client';
 import { JobPosting } from './types';
-import { parseJobEntity } from './parse-job';
+import { parseJobEntity } from './utils';
 
 export async function getJob(id: string): Promise<JobPosting | null> {
   try {
