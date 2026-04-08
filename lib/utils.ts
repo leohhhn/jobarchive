@@ -13,10 +13,18 @@ interface ArkivEntity {
   toJson: () => Record<string, string>;
 }
 
+/** Returns days remaining until expiry, clamped to 0 for already-expired listings. */
 export function daysUntilExpiry(expiresAt: number): number {
   return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
 }
 
+/**
+ * Converts a raw Arkiv entity into a JobPosting.
+ *
+ * Expiration on Arkiv is block-based, not timestamp-based. We convert it to a
+ * Unix ms timestamp by extrapolating from the current block and block duration:
+ *   expiresAt = (currentBlockTime + (expiresAtBlock - currentBlock) * blockDuration) * 1000
+ */
 export function parseJobEntity(
   entity: ArkivEntity,
   timing: BlockTiming,
@@ -53,6 +61,7 @@ export function parseJobEntity(
   };
 }
 
+/** Formats a raw dollar value as a human-readable string (e.g. 150000 → "150k", 1500000 → "1.5m"). */
 function formatCompValue(value: number): string {
   if (value >= 1_000_000) {
     const m = value / 1_000_000;
@@ -63,6 +72,7 @@ function formatCompValue(value: number): string {
   return `${k}k`;
 }
 
+/** Returns a formatted compensation label (e.g. "USD 100k – 150k"), or null if no comp data. */
 export function formatCompLabel(
   job: Pick<JobPosting, 'compMin' | 'compMax' | 'compCurrency'>,
 ): string | null {

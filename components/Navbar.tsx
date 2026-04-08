@@ -42,6 +42,15 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {mounted && isConnected && (
             <Link
+              href="/my-listings"
+              style={{ backgroundColor: 'var(--arkiv-orange)' }}
+              className="text-white text-sm font-medium px-4 py-2 rounded-lg transition-opacity hover:opacity-90"
+            >
+              My Listings
+            </Link>
+          )}
+          {mounted && isConnected && (
+            <Link
               href="/new"
               style={{ backgroundColor: 'var(--arkiv-orange)' }}
               className="text-white text-sm font-medium px-4 py-2 rounded-lg transition-opacity hover:opacity-90"

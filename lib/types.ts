@@ -21,7 +21,6 @@ export interface JobPosting {
   author: string;
   postedAt: number;
   expiresAt: number;
-  // structured compensation
   compMin?: number;
   compMax?: number;
   compCurrency?: Currency;

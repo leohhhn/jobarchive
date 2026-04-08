@@ -35,7 +35,7 @@ const queryClient = new QueryClient();
 
 const rainbowKitTheme = {
   ...lightTheme({
-    accentColor: 'var(--color-primary)',
+    accentColor: 'var(--arkiv-blue)',
   }),
   fonts: {
     body: 'var(--default-font-family)',
