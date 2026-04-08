@@ -1,8 +1,23 @@
 import { getJobs } from '@/lib/list-jobs';
-import JobList from '@/components/JobList';
+import JobSearch from '@/components/JobSearch';
+import { JOB_CATEGORIES } from '@/lib/types';
 
-export default async function Home() {
-  const jobs = await getJobs();
+interface HomeProps {
+  searchParams: Promise<{
+    category?: string;
+    remote?: string;
+    compMin?: string;
+    compMax?: string;
+  }>;
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const { category, remote } = await searchParams;
+
+  const jobs = await getJobs({
+    category: category || undefined,
+    remote: remote === 'true' ? true : undefined,
+  });
 
   return (
     <main
@@ -33,15 +48,7 @@ export default async function Home() {
 
       {/* Jobs */}
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <div className="flex justify-between items-center mb-6">
-          <p
-            className="text-sm"
-            style={{ color: 'var(--arkiv-ink)', opacity: 0.5 }}
-          >
-            {jobs.length} open positions
-          </p>
-        </div>
-        <JobList jobs={jobs} />
+        <JobSearch jobs={jobs} categories={[...JOB_CATEGORIES]} />
       </div>
     </main>
   );

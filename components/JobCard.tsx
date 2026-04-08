@@ -13,26 +13,33 @@ export default function JobCard({ job }: { job: JobPosting }) {
         backgroundColor: 'white',
         border: '1px solid var(--arkiv-stone)',
       }}
-      className="rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer"
+      className="rounded-xl p-6 hover:shadow-md transition-shadow cursor-pointer flex flex-col h-full w-full"
     >
+      {/* Header */}
       <div className="mb-3">
         <h2
           style={{ color: 'var(--arkiv-ink)' }}
-          className="text-lg font-semibold mb-1"
+          className="text-lg font-semibold mb-0.5"
         >
           {job.title}
         </h2>
-        <p className="text-gray-500 text-sm">{job.company}</p>
-        {job.compensation && (
+        <p className="text-sm font-medium text-gray-600">{job.company}</p>
+        {(job.compMin || job.compMax) && (
           <p
             style={{ color: 'var(--arkiv-orange)' }}
             className="text-sm font-semibold mt-1"
           >
-            {job.compensation}
+            {job.compCurrency}{' '}
+            {job.compMin && job.compMax
+              ? `${(job.compMin / 1000).toFixed(0)}k – ${(job.compMax / 1000).toFixed(0)}k`
+              : job.compMin
+                ? `${(job.compMin / 1000).toFixed(0)}k+`
+                : `Up to ${(job.compMax! / 1000).toFixed(0)}k`}
           </p>
         )}
       </div>
 
+      {/* Location */}
       <div className="flex gap-2 mb-3 items-center">
         <span className="text-sm text-gray-500">{job.location}</span>
         {job.remote && (
@@ -49,7 +56,8 @@ export default function JobCard({ job }: { job: JobPosting }) {
         )}
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-4">
+      {/* Stack — grows to fill space */}
+      <div className="flex flex-wrap gap-2 mb-4 flex-1">
         {job.stack.map((tag) => (
           <span
             key={tag}
@@ -57,14 +65,18 @@ export default function JobCard({ job }: { job: JobPosting }) {
               backgroundColor: 'var(--arkiv-stone)',
               color: 'var(--arkiv-ink)',
             }}
-            className="text-xs px-2 py-1 rounded-md font-medium opacity-80"
+            className="text-xs px-2 py-1 rounded-md font-medium opacity-80 h-fit"
           >
             {tag}
           </span>
         ))}
       </div>
 
-      <div className="flex justify-between items-center text-xs text-gray-400">
+      {/* Footer — always at bottom */}
+      <div
+        className="flex justify-between items-center text-xs text-gray-400 pt-3 border-t"
+        style={{ borderColor: 'var(--arkiv-stone)' }}
+      >
         <span>Posted {new Date(job.postedAt).toLocaleDateString()}</span>
         <span style={days < 7 ? { color: 'var(--arkiv-orange)' } : {}}>
           Expires in {days} days

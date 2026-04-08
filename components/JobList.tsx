@@ -16,9 +16,9 @@ export default function JobList({ jobs }: JobListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 items-stretch">
       {jobs.map((job) => (
-        <Link key={job.id} href={`/job/${job.id}`}>
+        <Link key={job.id} href={`/job/${job.id}`} className="flex w-full">
           <JobCard job={job} />
         </Link>
       ))}

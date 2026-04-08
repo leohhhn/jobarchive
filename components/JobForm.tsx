@@ -6,14 +6,12 @@ import { useAccount } from 'wagmi';
 import { createJob } from '../lib/create-job';
 import { revalidateAndRedirectHome } from '../app/actions';
 import { useIsMounted } from '../hooks/useIsMounted';
-
-const EXPIRY_OPTIONS = [
-  { label: '7 days', days: 7 },
-  { label: '14 days', days: 14 },
-  { label: '30 days', days: 30 },
-  { label: '60 days', days: 60 },
-  { label: '90 days', days: 90 },
-] as const;
+import {
+  CURRENCIES,
+  Currency,
+  EXPIRY_OPTIONS,
+  JOB_CATEGORIES,
+} from '../lib/types';
 
 export default function JobForm() {
   const { connector, address, isConnected, isConnecting, isReconnecting } =
@@ -31,7 +29,9 @@ export default function JobForm() {
     category: '',
     stack: '',
     description: '',
-    compensation: '',
+    compMin: '',
+    compMax: '',
+    compCurrency: 'USD' as Currency,
     expiryDays: 30 as number,
     customExpiry: false,
   });
@@ -46,7 +46,9 @@ export default function JobForm() {
     !loading;
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) {
     const { name, value, type } = e.target;
     setForm((prev) => ({
@@ -74,7 +76,9 @@ export default function JobForm() {
           .map((s) => s.trim())
           .filter(Boolean),
         description: form.description.trim(),
-        compensation: form.compensation.trim() || undefined,
+        compMin: form.compMin ? Number(form.compMin) : undefined,
+        compMax: form.compMax ? Number(form.compMax) : undefined,
+        compCurrency: form.compCurrency,
         postedAt: Date.now(),
         expiresAt: Date.now() + form.expiryDays * 24 * 60 * 60 * 1000,
       });
@@ -273,12 +277,18 @@ export default function JobForm() {
             id="category"
             name="category"
             type="text"
+            list="category-suggestions"
             placeholder="e.g. Engineering, DevRel"
             className={input()}
             value={form.category}
             onChange={handleChange}
             disabled={loading}
           />
+          <datalist id="category-suggestions">
+            {JOB_CATEGORIES.map((c) => (
+              <option key={c} value={c} />
+            ))}
+          </datalist>
         </Field>
 
         <Field label="Stack" htmlFor="stack">
@@ -294,19 +304,50 @@ export default function JobForm() {
           />
         </Field>
 
-        <Field label="Compensation" htmlFor="compensation">
-          <input
-            id="compensation"
-            name="compensation"
-            type="text"
-            placeholder="e.g. $120k–$160k (optional)"
-            className={input()}
-            value={form.compensation}
-            onChange={handleChange}
-            disabled={loading}
-          />
+        <Field label="Compensation" htmlFor="compMin">
+          <div className="flex gap-2 items-center">
+            <select
+              name="compCurrency"
+              value={form.compCurrency}
+              onChange={handleChange}
+              className={input('w-24 shrink-0')}
+              disabled={loading}
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+            <input
+              id="compMin"
+              name="compMin"
+              type="number"
+              min={0}
+              placeholder="Min"
+              className={input()}
+              style={{ width: '120px', flexShrink: 0 }}
+              value={form.compMin}
+              onChange={handleChange}
+              disabled={loading}
+            />
+            <span className="text-sm text-gray-400 shrink-0">–</span>
+            <input
+              name="compMax"
+              type="number"
+              min={0}
+              placeholder="Max"
+              className={input()}
+              style={{ width: '120px', flexShrink: 0 }}
+              value={form.compMax}
+              onChange={handleChange}
+              disabled={loading}
+            />
+          </div>
+          <p className="text-xs text-gray-400 mt-1">
+            Leave blank if not specified
+          </p>
         </Field>
-
         <Field label="Description" htmlFor="description">
           <textarea
             id="description"

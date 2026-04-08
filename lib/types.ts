@@ -7,13 +7,49 @@ export interface JobPosting {
   stack: string[];
   category: string;
   description: string;
-  compensation?: string;
-  author: string; // entity creator's address
-  postedAt: number; // unix timestamp
-  expiresAt: number; // unix timestamp
+  author: string;
+  postedAt: number;
+  expiresAt: number;
+  // structured compensation
+  compMin?: number;
+  compMax?: number;
+  compCurrency?: Currency;
 }
-
 export const PROJECT_ATTRIBUTE = {
   key: 'project',
-  value: 'TESTTESTLEONJOBS',
+  value: 'JobArchiveTest1',
 };
+
+export const JOB_CATEGORIES = [
+  'Engineering',
+  'DevRel',
+  'Research',
+  'Design',
+  'Product',
+  'Other',
+] as const;
+
+export type JobCategory = (typeof JOB_CATEGORIES)[number];
+
+export interface JobSearchProps {
+  jobs: JobPosting[];
+  categories: string[];
+}
+
+export const EXPIRY_OPTIONS = [
+  { label: '7 days', days: 7 },
+  { label: '14 days', days: 14 },
+  { label: '30 days', days: 30 },
+  { label: '60 days', days: 60 },
+  { label: '90 days', days: 90 },
+] as const;
+
+export const CURRENCIES = ['USD', 'EUR', 'GBP'] as const;
+export type Currency = (typeof CURRENCIES)[number];
+
+export const COMP_RANGES = [
+  { label: 'Under $50k', min: 0, max: 50000 },
+  { label: '$50k – $100k', min: 50000, max: 100000 },
+  { label: '$100k – $150k', min: 100000, max: 150000 },
+  { label: '$150k+', min: 150000, max: null },
+] as const;

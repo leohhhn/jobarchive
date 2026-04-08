@@ -26,7 +26,6 @@ export async function createJob(
       title: job.title,
       company: job.company,
       description: job.description,
-      compensation: job.compensation ?? null,
       author: address,
     }),
     contentType: 'application/json',
@@ -40,6 +39,15 @@ export async function createJob(
       { key: 'stack', value: job.stack.join(',') },
       { key: 'postedAt', value: Date.now() },
       { key: 'expiresAt', value: job.expiresAt },
+      ...(job.compMin !== undefined
+        ? [{ key: 'compMin', value: job.compMin }]
+        : []),
+      ...(job.compMax !== undefined
+        ? [{ key: 'compMax', value: job.compMax }]
+        : []),
+      ...(job.compCurrency
+        ? [{ key: 'compCurrency', value: job.compCurrency }]
+        : []),
     ],
     expiresIn: ExpirationTime.fromDays(
       Math.ceil((job.expiresAt - Date.now()) / (1000 * 60 * 60 * 24)),
