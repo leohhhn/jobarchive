@@ -115,7 +115,6 @@ async function main() {
 
   const creates = JOBS.map((job) => {
     const postedAt = now;
-    const expiresAt = postedAt + job.expiryDays * 24 * 60 * 60 * 1000;
 
     return {
       payload: jsonToPayload({
@@ -135,7 +134,6 @@ async function main() {
         { key: 'remote', value: job.remote ? 'true' : 'false' },
         { key: 'stack', value: job.stack.join(',') },
         { key: 'postedAt', value: postedAt },
-        { key: 'expiresAt', value: expiresAt },
         { key: 'compMin', value: job.compMin },
         { key: 'compMax', value: job.compMax },
         { key: 'compCurrency', value: job.compCurrency },
