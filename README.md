@@ -1,5 +1,7 @@
 # JobArchive
 
+![preview](public/front-page-preview.png)
+
 JobArchive is a decentralized Web3 job board built on [Arkiv Network](https://arkiv.network). Job listings are stored as on-chain entities — no database, no backend, no central authority.
 
 ## What it does
