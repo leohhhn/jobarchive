@@ -23,7 +23,7 @@ Each job listing is an Arkiv entity stored on the Kaolin testnet. Metadata (cate
 
 ## Running locally
 
-**Prerequisites:** [Bun](https://bun.sh), a wallet private key for the Kaolin testnet, and a WalletConnect project ID.
+**Prerequisites:** [Bun](https://bun.sh), a wallet private key for the Kaolin testnet and some funds for running the transactions, which can be obtained at the [Kaolin Faucet](https://kaolin.hoodi.arkiv.network/faucet/).
 
 ```bash
 # Install dependencies
