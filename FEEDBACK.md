@@ -33,7 +33,7 @@ Rosario link on the main page under "Test DB-chains" is broken/dead.
 
 ---
 
-## SDK Pain Points
+## SDK & Docs Pain Points
 
 ### Block-based expiration leaks through the abstraction
 
@@ -66,9 +66,23 @@ Another idea - a namespace system, where users can register a name under which t
 
 The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full as examples seems like a large wall - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
 
+Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
+
+### Docs
+
 Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
 
-Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
+Also, docs searchability itself is not handled well. A search bar using Meilisearch or similar docs scraper would improve the experience a lot.
+
+Finally, the docs seem a bit over the place - there is a getting started section, which is seemingly not part of the docs (separate page, separate part of the website), and there are the "docs". I believe a unified docs.arkiv.network site would be a solid approach. I would like to see something like (simplified):
+
+- `Core Concepts` - SDK-agnostic
+- `Getting started` - per-SDK - with a full example app
+- `Stack` - how it works under the hood
+- `Limitations` - what is impossible compared to a standard DB SDK, etc
+- `Good practices` - whats different from a standard DB approach, what to watch out for as a user/developer, etc
+- `API Reference`
+- etc.
 
 ### Local development
 
