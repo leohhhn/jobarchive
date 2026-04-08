@@ -9,7 +9,7 @@ I built [**JobArchive**](https://github.com/leohhhn/jobarchive) — a decentrali
 I would recommend keeping a README.md version of the litepaper on GitHub - especially if it's listed upfront on the page for the reader to click on. This will allow for easy updating and management of the document, fixing some of the minor items, such as:
 
 - The comparison table on page 11 has "Customizable" column items but it's not clear what that means in context — customizable how, compared to what? Some more data would be useful (even though this is a litepaper).
-- The Pectra upgrade has already shipped, so references to it as upcoming are outdated.
+- ie, the Pectra upgrade has already shipped, so references to it as upcoming are outdated.
 - etc
 
 IMHO, listing "Developer Docs" on the home page instead of the "Read Litepaper" would be a better approach to devs and users.
@@ -55,7 +55,7 @@ Filtering on exact attribute values works fine. But there's no way to query on f
 There's no way to isolate one app's entities from everything else on the network. The workaround is manually tagging every entity with a sentinel attribute and including it in every query:
 
 ```ts
-eq('JobArchiveTest4_project', 'JobArchiveTest4');
+eq('project', 'JobArchiveTest4');
 ```
 
 It works, but it's easy to forget and produces ugly attribute keys that might already be used in a previous app. An `appId` concept at client creation that scopes reads and writes automatically would be much cleaner.
@@ -69,3 +69,7 @@ The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock
 Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
 
 Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
+
+### Local development
+
+I am generally a proponent of not spamming testnets with garbage data which I did quite often during this mini-project. A local development kit could be a good next step. One good binary that would allow the developer to spin up a local testnet and a few other tools would be of great use down the line with many users.
