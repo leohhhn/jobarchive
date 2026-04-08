@@ -48,3 +48,26 @@ export function parseJobEntity(
     applyUrl: payload.applyUrl,
   };
 }
+
+function formatCompValue(value: number): string {
+  if (value >= 1_000_000) {
+    const m = value / 1_000_000;
+    return `${m < 10 ? m.toFixed(1) : Math.floor(m)}m`;
+  }
+
+  const k = Math.floor(value / 1000);
+  return `${k}k`;
+}
+
+export function formatCompLabel(
+  job: Pick<JobPosting, 'compMin' | 'compMax' | 'compCurrency'>,
+): string | null {
+  const { compMin, compMax, compCurrency } = job;
+  if (!compMin && !compMax) return null;
+
+  const currency = compCurrency ?? '';
+  if (compMin && compMax)
+    return `${currency} ${formatCompValue(compMin)} – ${formatCompValue(compMax)}`;
+  if (compMin) return `${currency} ${formatCompValue(compMin)}+`;
+  return `${currency} Up to ${formatCompValue(compMax!)}`;
+}

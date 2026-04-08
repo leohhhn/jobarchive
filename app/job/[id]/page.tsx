@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { getJob } from '@/lib/get-job';
 import JobOwnerActions from '@/components/JobOwnerActions';
 import { notFound } from 'next/navigation';
+import { formatCompLabel } from '@/lib/format';
 
 function daysUntilExpiry(expiresAt: number): number {
   const days = Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24));
@@ -20,16 +21,7 @@ export default async function JobPage({
   const days = daysUntilExpiry(job.expiresAt);
   const isExpiringSoon = days < 7;
 
-  const compLabel =
-    job.compMin || job.compMax
-      ? `${job.compCurrency} ${
-          job.compMin && job.compMax
-            ? `${(job.compMin / 1000).toFixed(0)}k – ${(job.compMax / 1000).toFixed(0)}k`
-            : job.compMin
-              ? `${(job.compMin / 1000).toFixed(0)}k+`
-              : `Up to ${(job.compMax! / 1000).toFixed(0)}k`
-        }`
-      : null;
+  const compLabel = formatCompLabel(job);
 
   return (
     <main

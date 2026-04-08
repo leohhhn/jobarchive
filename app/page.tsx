@@ -6,8 +6,6 @@ interface HomeProps {
   searchParams: Promise<{
     category?: string;
     remote?: string;
-    compMin?: string;
-    compMax?: string;
   }>;
 }
 

@@ -72,7 +72,7 @@ export default function JobForm() {
     setLoading(true);
     setError(null);
     try {
-      const { entityKey, txHash } = await createJob(connector, address, {
+      const { txHash } = await createJob(connector, address, {
         title: form.title.trim(),
         company: form.company.trim(),
         location: form.location.trim(),
@@ -144,8 +144,9 @@ export default function JobForm() {
           </a>
           <button
             onClick={() => revalidateAndRedirectHome()}
-            className="mt-1 w-full py-2.5 rounded-lg bg-purple-600 text-white text-sm
-                     font-medium hover:bg-purple-700 transition-colors"
+            className="mt-1 w-full py-2.5 rounded-lg text-white text-sm
+                     font-medium hover:opacity-90 transition-opacity"
+            style={{ backgroundColor: 'var(--arkiv-blue)' }}
           >
             Back to listings
           </button>
@@ -285,7 +286,7 @@ export default function JobForm() {
             name="remote"
             checked={form.remote}
             onChange={handleChange}
-            className="w-4 h-4 accent-purple-600"
+            className="w-4 h-4 accent-[#181EA9]"
           />
           This is a remote/hybrid position
         </label>
@@ -384,9 +385,10 @@ export default function JobForm() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="w-full py-2.5 rounded-lg bg-purple-600 text-white text-sm font-medium
-                     hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed
-                     transition-colors flex items-center justify-center gap-2"
+          className="w-full py-2.5 rounded-lg text-white text-sm font-medium
+                     hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed
+                     transition-opacity flex items-center justify-center gap-2"
+          style={{ backgroundColor: 'var(--arkiv-blue)' }}
         >
           {loading ? (
             <svg
@@ -438,5 +440,5 @@ function Field({
 
 const input = (extra = '') =>
   `w-full px-3 py-2 rounded-lg border border-gray-300 text-sm bg-white
-   focus:outline-none focus:ring-2 focus:ring-purple-400
+   focus:outline-none focus:ring-2 focus:ring-[#181EA940]
    disabled:opacity-50 disabled:cursor-not-allowed ${extra}`;

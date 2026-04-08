@@ -1,4 +1,5 @@
 import { JobPosting } from '@/lib/types';
+import { formatCompLabel } from '@/lib/format';
 
 function daysUntilExpiry(expiresAt: number): number {
   return Math.max(0, Math.ceil((expiresAt - Date.now()) / (1000 * 60 * 60 * 24)));
@@ -24,17 +25,12 @@ export default function JobCard({ job }: { job: JobPosting }) {
           {job.title}
         </h2>
         <p className="text-sm font-medium text-gray-600">{job.company}</p>
-        {(job.compMin || job.compMax) && (
+        {formatCompLabel(job) && (
           <p
             style={{ color: 'var(--arkiv-orange)' }}
             className="text-sm font-semibold mt-1"
           >
-            {job.compCurrency}{' '}
-            {job.compMin && job.compMax
-              ? `${(job.compMin / 1000).toFixed(0)}k – ${(job.compMax / 1000).toFixed(0)}k`
-              : job.compMin
-                ? `${(job.compMin / 1000).toFixed(0)}k+`
-                : `Up to ${(job.compMax! / 1000).toFixed(0)}k`}
+            {formatCompLabel(job)}
           </p>
         )}
       </div>
@@ -90,8 +86,8 @@ export default function JobCard({ job }: { job: JobPosting }) {
         style={{ borderColor: 'var(--arkiv-stone)' }}
       >
         <span>Posted {new Date(job.postedAt).toLocaleDateString()}</span>
-        <span style={days < 7 ? { color: 'var(--arkiv-orange)' } : {}}>
-          Expires in {days} days
+        <span style={days === 0 || days < 7 ? { color: 'var(--arkiv-orange)' } : {}}>
+          {days === 0 ? 'Expired' : `Expires in ${days} days`}
         </span>
       </div>
     </div>
