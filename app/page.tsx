@@ -7,13 +7,26 @@ interface HomeProps {
     category?: string;
     remote?: string;
     limit?: string;
+    compMin?: string;
+    compMax?: string;
   }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { category, remote, limit: limitParam } = await searchParams;
+  const {
+    category,
+    remote,
+    limit: limitParam,
+    compMin,
+    compMax,
+  } = await searchParams;
 
-  const limit = FETCH_LIMITS.includes(Number(limitParam) as typeof FETCH_LIMITS[number])
+  const minComp = compMin ? Number(compMin) : undefined;
+  const maxComp = compMax ? Number(compMax) : undefined;
+
+  const limit = FETCH_LIMITS.includes(
+    Number(limitParam) as (typeof FETCH_LIMITS)[number],
+  )
     ? Number(limitParam)
     : DEFAULT_FETCH_LIMIT;
 
@@ -21,6 +34,8 @@ export default async function Home({ searchParams }: HomeProps) {
     {
       category: category || undefined,
       remote: remote === 'true' ? true : undefined,
+      minComp,
+      maxComp,
     },
     limit,
   );

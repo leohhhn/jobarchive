@@ -33,7 +33,7 @@ export interface JobSearchProps {
   limit: number;
 }
 
-export const FETCH_LIMITS = [20, 40, 70, 100] as const;
+export const FETCH_LIMITS = [20, 40, 70, 100, 150, 200, 250, 300] as const;
 export type FetchLimit = (typeof FETCH_LIMITS)[number];
 export const DEFAULT_FETCH_LIMIT: FetchLimit = 20;
 

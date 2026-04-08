@@ -2,6 +2,9 @@ import { arkivPublicClient } from './arkiv-client';
 import { JobPosting } from './types';
 import { parseJobEntity } from './utils';
 
+/**
+ * Fetches a job posting from Arkiv by its entity ID and parses it into the proper format.
+ */
 export async function getJob(id: string): Promise<JobPosting | null> {
   try {
     const [entity, timing] = await Promise.all([

@@ -9,6 +9,10 @@ import {
   custom,
 } from '@arkiv-network/sdk';
 
+/**
+ * Creates a new job posting on Arkiv. The job will be
+ * associated with the provided Ethereum address, which will be the author of the job posting.
+ */
 export async function createJob(
   connector: Connector,
   address: `0x${string}`,

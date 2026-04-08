@@ -7,6 +7,10 @@ import {
   custom,
 } from '@arkiv-network/sdk';
 
+/**
+ * Extends the expiration time of an existing job posting on Arkiv.
+ * Only the author of the job posting can extend it.
+ */
 export async function extendJob(
   connector: Connector,
   address: `0x${string}`,
@@ -27,6 +31,11 @@ export async function extendJob(
   });
 }
 
+/**
+ * Deletes an existing job posting from Arkiv.
+ * The job will no longer be visible in the job board.
+ * Only the author of the job posting can delete it.
+ */
 export async function deleteJob(
   connector: Connector,
   address: `0x${string}`,

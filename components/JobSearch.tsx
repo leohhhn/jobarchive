@@ -44,30 +44,10 @@ export default function JobSearch({ jobs, categories, limit }: JobSearchProps) {
       );
     }
 
-    if (activeCompMin !== '') {
-      const range = COMP_RANGES.find((r) => String(r.min) === activeCompMin);
-      if (range) {
-        result = result.filter((job) => {
-          if (job.compMin === undefined && job.compMax === undefined)
-            return false;
-          const jobMin = job.compMin ?? 0;
-          const jobMax = job.compMax ?? jobMin;
-          if (range.max === null)
-            return jobMax >= range.min || jobMin >= range.min;
-          return jobMin <= range.max && jobMax >= range.min;
-        });
-      }
-    }
-
     return result;
-  }, [jobs, text, activeCompMin]);
+  }, [jobs, text]);
 
-  const hasActiveFilters = !!(
-    activeCategory ||
-    activeRemote ||
-    activeCompMin ||
-    text
-  );
+  const hasActiveFilters = !!(activeCategory || activeRemote || text);
 
   return (
     <div className="space-y-6">
@@ -179,7 +159,10 @@ export default function JobSearch({ jobs, categories, limit }: JobSearchProps) {
             value={limit}
             onChange={(e) => updateParams({ limit: e.target.value })}
             className="px-2 py-1 rounded-lg border text-xs bg-white focus:outline-none"
-            style={{ borderColor: 'var(--arkiv-stone)', color: 'var(--arkiv-ink)' }}
+            style={{
+              borderColor: 'var(--arkiv-stone)',
+              color: 'var(--arkiv-ink)',
+            }}
           >
             {FETCH_LIMITS.map((l) => (
               <option key={l} value={l}>
@@ -196,7 +179,9 @@ export default function JobSearch({ jobs, categories, limit }: JobSearchProps) {
           className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors"
           style={{
             borderColor: 'var(--arkiv-stone)',
-            color: hasActiveFilters ? 'var(--arkiv-orange)' : 'var(--arkiv-ink)',
+            color: hasActiveFilters
+              ? 'var(--arkiv-orange)'
+              : 'var(--arkiv-ink)',
             opacity: hasActiveFilters ? 1 : 0.4,
           }}
         >
@@ -218,7 +203,10 @@ export default function JobSearch({ jobs, categories, limit }: JobSearchProps) {
               updateParams({ limit: String(nextLimit) });
             }}
             className="text-sm font-medium px-6 py-2.5 rounded-lg border transition-opacity hover:opacity-80"
-            style={{ borderColor: 'var(--arkiv-blue)', color: 'var(--arkiv-blue)' }}
+            style={{
+              borderColor: 'var(--arkiv-blue)',
+              color: 'var(--arkiv-blue)',
+            }}
           >
             Load more
           </button>
