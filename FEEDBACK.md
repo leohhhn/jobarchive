@@ -20,6 +20,8 @@ I would recommend keeping a README.md version of the litepaper on GitHub - espec
 
 It would also help if the explorer could automatically detect whether a hash is a transaction or an entity and redirect accordingly — right now you have to know which URL format to use. Not sure if this is technically possible, haven't looked into the format of entity key vs transaction hash.
 
+Rosario link on the main page under "Test DB-chains" is broken/dead.
+
 **Faucet** had a few issues:
 
 - Captcha failed me a few times - I had to re-do it. Not necessarily Akriv's fault but it was a small friction point.
@@ -44,7 +46,7 @@ A utility like `entityExpiresAt(entity, timing): Date` or similar could be a goo
 
 ### No full-text search
 
-Filtering on exact attribute values works fine. But there's no way to query on free-text fields — title, company name, etc. — at the protocol level. Everything has to be fetched first and filtered client-side. A `contains` or `startsWith` operator would fix this.
+Filtering on exact attribute values works fine. But there's no way to query on free-text fields — title, company name, etc. — at the protocol level. Everything has to be fetched first and filtered client-side. A `contains` or `startsWith` operator could fix this if it's feasible.
 
 ### No app namespacing
 
@@ -54,12 +56,14 @@ There's no way to isolate one app's entities from everything else on the network
 eq('JobArchiveTest4_project', 'JobArchiveTest4');
 ```
 
-It works, but it's easy to forget and produces ugly attribute keys. An `appId` concept at client creation that scopes reads and writes automatically would be much cleaner.
+It works, but it's easy to forget and produces ugly attribute keys that might already be used in a previous app. An `appId` concept at client creation that scopes reads and writes automatically would be much cleaner.
 
-A namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach.
+Another idea - a namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach, although it also comes with drawbacks.
 
 ### Features of the SDK are not easily discoverable
 
-The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit, both of which were unnecessary. A query cookbook or richer JSDoc examples would have helped.
+The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full as examples seems like a large wall - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
 
-Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. More complex examples and use cases should be more easily accessible and visible to developers.
+Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
+
+Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
