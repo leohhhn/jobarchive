@@ -6,13 +6,13 @@ I built [**JobArchive**](https://github.com/leohhhn/jobarchive) — a decentrali
 
 ## Litepaper
 
-I would recommend keeping a README.md version of the litepaper on GitHub - especially if it's listed upfront on the page for the reader to click on. This will allow for easy updating and management of the document, fixing some of the minor items, such as:
+I would recommend keeping a Markdown version of the litepaper on GitHub - especially if it's listed upfront on the page for the reader to click on. This will allow for easy updating and management of the document, fixing some of the minor items, such as:
 
 - The comparison table on page 11 has "Customizable" column items but it's not clear what that means in context — customizable how, compared to what? Some more data would be useful (even though this is a litepaper).
 - ie, the Pectra upgrade has already shipped, so references to it as upcoming are outdated.
 - etc
 
-IMHO, listing "Developer Docs" on the home page instead of the "Read Litepaper" would be a better approach to devs and users.
+IMHO, listing "Developer Docs" on the home page instead of the "Read Litepaper" would be more appealing to devs and users.
 
 ---
 
@@ -22,7 +22,7 @@ IMHO, listing "Developer Docs" on the home page instead of the "Read Litepaper" 
 
 It would also help if the explorer could automatically detect whether a hash is a transaction or an entity and redirect accordingly — right now you have to know which URL format to use. Not sure if this is technically possible, haven't looked into the format of entity key vs transaction hash.
 
-Rosario link on the main page under "Test DB-chains" is broken/dead.
+Rosario link on the main page under "Test DB-chains" is broken/dead. A dead link linter would help with this.
 
 **Faucet** had a few issues:
 
@@ -60,11 +60,11 @@ eq('project', 'JobArchiveTest4');
 
 It works, but it's easy to forget and produces ugly attribute keys that might already be used in a previous app. An `appId` concept at client creation that scopes reads and writes automatically would be much cleaner.
 
-Another idea - a namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach, although it also comes with drawbacks.
+Another idea - a namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach, although it also comes with its own drawbacks.
 
 ### Features of the SDK are not easily discoverable
 
-The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full as examples seems like a large wall - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
+The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit at first, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full as examples seems like a large wall - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
 
 Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
 
