@@ -1,6 +1,6 @@
 export const PROJECT_ATTRIBUTE = {
   key: 'project',
-  value: 'JobArchiveTest3',
+  value: 'JobArchiveTest4',
 };
 
 if (!PROJECT_ATTRIBUTE.value) {
@@ -30,7 +30,12 @@ export interface JobPosting {
 export interface JobSearchProps {
   jobs: JobPosting[];
   categories: string[];
+  limit: number;
 }
+
+export const FETCH_LIMITS = [20, 40, 70, 100] as const;
+export type FetchLimit = (typeof FETCH_LIMITS)[number];
+export const DEFAULT_FETCH_LIMIT: FetchLimit = 20;
 
 export const EXPIRY_OPTIONS = [
   { label: '7 days', days: 7 },

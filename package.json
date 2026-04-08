@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@arkiv-network/sdk": "^0.6.3",
+    "@faker-js/faker": "^10.4.0",
     "@rainbow-me/rainbowkit": "2.2.5",
     "daisyui": "^5.5.19",
     "dotenv": "^17.4.1",

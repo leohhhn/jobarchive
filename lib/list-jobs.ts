@@ -1,4 +1,4 @@
-import { JobPosting, PROJECT_ATTRIBUTE } from './types';
+import { JobPosting, PROJECT_ATTRIBUTE, DEFAULT_FETCH_LIMIT } from './types';
 import { arkivPublicClient } from './arkiv-client';
 import { parseJobEntity } from './utils';
 import { eq } from '@arkiv-network/sdk/query';
@@ -8,7 +8,10 @@ export interface JobFilters {
   category?: string;
 }
 
-export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
+export async function getJobs(
+  filters: JobFilters = {},
+  limit: number = DEFAULT_FETCH_LIMIT,
+): Promise<JobPosting[]> {
   const query = arkivPublicClient
     .buildQuery()
     .where([
@@ -18,7 +21,7 @@ export async function getJobs(filters: JobFilters = {}): Promise<JobPosting[]> {
     .withAttributes(true)
     .withPayload(true)
     .withMetadata(true)
-    .limit(50);
+    .limit(limit);
 
   if (filters.remote !== undefined) {
     query.where(eq('remote', filters.remote ? 'true' : 'false'));

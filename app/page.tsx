@@ -1,21 +1,29 @@
 import { getJobs } from '@/lib/list-jobs';
 import JobSearch from '@/components/JobSearch';
-import { JOB_CATEGORIES } from '@/lib/types';
+import { JOB_CATEGORIES, FETCH_LIMITS, DEFAULT_FETCH_LIMIT } from '@/lib/types';
 
 interface HomeProps {
   searchParams: Promise<{
     category?: string;
     remote?: string;
+    limit?: string;
   }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const { category, remote } = await searchParams;
+  const { category, remote, limit: limitParam } = await searchParams;
 
-  const jobs = await getJobs({
-    category: category || undefined,
-    remote: remote === 'true' ? true : undefined,
-  });
+  const limit = FETCH_LIMITS.includes(Number(limitParam) as typeof FETCH_LIMITS[number])
+    ? Number(limitParam)
+    : DEFAULT_FETCH_LIMIT;
+
+  const jobs = await getJobs(
+    {
+      category: category || undefined,
+      remote: remote === 'true' ? true : undefined,
+    },
+    limit,
+  );
 
   return (
     <main
@@ -45,7 +53,7 @@ export default async function Home({ searchParams }: HomeProps) {
 
       {/* Jobs */}
       <div className="max-w-6xl mx-auto px-6 py-10">
-        <JobSearch jobs={jobs} categories={[...JOB_CATEGORIES]} />
+        <JobSearch jobs={jobs} categories={[...JOB_CATEGORIES]} limit={limit} />
       </div>
     </main>
   );

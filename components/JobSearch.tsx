@@ -2,10 +2,10 @@
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { useState, useMemo, useTransition } from 'react';
-import { JobSearchProps, COMP_RANGES } from '@/lib/types';
+import { JobSearchProps, COMP_RANGES, FETCH_LIMITS } from '@/lib/types';
 import JobList from './JobList';
 
-export default function JobSearch({ jobs, categories }: JobSearchProps) {
+export default function JobSearch({ jobs, categories, limit }: JobSearchProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -166,14 +166,28 @@ export default function JobSearch({ jobs, categories }: JobSearchProps) {
         </button>
       </div>
 
-      {/* Results count + clear */}
-      <div className="flex items-center justify-between">
-        <p
-          className="text-sm"
-          style={{ color: 'var(--arkiv-ink)', opacity: 0.5 }}
-        >
-          {isPending ? 'Loading...' : `${filtered.length} open positions`}
-        </p>
+      {/* Results count + limit selector + clear */}
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <p
+            className="text-sm"
+            style={{ color: 'var(--arkiv-ink)', opacity: 0.5 }}
+          >
+            {isPending ? 'Loading...' : `${filtered.length} open positions`}
+          </p>
+          <select
+            value={limit}
+            onChange={(e) => updateParams({ limit: e.target.value })}
+            className="px-2 py-1 rounded-lg border text-xs bg-white focus:outline-none"
+            style={{ borderColor: 'var(--arkiv-stone)', color: 'var(--arkiv-ink)' }}
+          >
+            {FETCH_LIMITS.map((l) => (
+              <option key={l} value={l}>
+                Show {l}
+              </option>
+            ))}
+          </select>
+        </div>
         <button
           onClick={() => {
             setText('');
@@ -182,9 +196,7 @@ export default function JobSearch({ jobs, categories }: JobSearchProps) {
           className="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors"
           style={{
             borderColor: 'var(--arkiv-stone)',
-            color: hasActiveFilters
-              ? 'var(--arkiv-orange)'
-              : 'var(--arkiv-ink)',
+            color: hasActiveFilters ? 'var(--arkiv-orange)' : 'var(--arkiv-ink)',
             opacity: hasActiveFilters ? 1 : 0.4,
           }}
         >
@@ -196,6 +208,22 @@ export default function JobSearch({ jobs, categories }: JobSearchProps) {
       <div className={isPending ? 'opacity-50 transition-opacity' : ''}>
         <JobList jobs={filtered} />
       </div>
+
+      {/* Load more */}
+      {!isPending && jobs.length >= limit && (
+        <div className="flex justify-center pt-2">
+          <button
+            onClick={() => {
+              const nextLimit = FETCH_LIMITS.find((l) => l > limit) ?? limit;
+              updateParams({ limit: String(nextLimit) });
+            }}
+            className="text-sm font-medium px-6 py-2.5 rounded-lg border transition-opacity hover:opacity-80"
+            style={{ borderColor: 'var(--arkiv-blue)', color: 'var(--arkiv-blue)' }}
+          >
+            Load more
+          </button>
+        </div>
+      )}
     </div>
   );
 }
