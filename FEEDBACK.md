@@ -1,6 +1,6 @@
 # Developer Feedback: Building on Arkiv (SDK v0.6.3)
 
-I built [**JobArchive**](https://github.com/leohhhn/jobarchive) — a decentralized job board — on top of the Arkiv SDK. Creates, queries, and manages job posting entities on the Kaolin testnet. This was quite a simple application given the timeframe and scope, so I did not get to explore all of the features of the SDK yet.
+I built [**JobArchive**](https://github.com/leohhhn/jobarchive) — a decentralized job board — on top of the Arkiv SDK. Creates, queries, and manages job posting entities on the Kaolin testnet. This was quite a simple application given the timeframe and scope, so I did not get to explore all of the features of the SDK yet. Below is a list of items that stood out during the process of creating this app, starting from the litepaper and docs to the code itself.
 
 ---
 
@@ -37,14 +37,7 @@ Rosario link on the main page under "Test DB-chains" is broken/dead. A dead link
 
 ### Block-based expiration leaks through the abstraction
 
-Expiration is stored as a block number, not a timestamp. Every app that wants to display expiry in human-readable time has to do this math themselves:
-
-```ts
-const expiresAt =
-  (currentBlockTime + (expiresAtBlock - currentBlock) * blockDuration) * 1000;
-```
-
-A utility like `entityExpiresAt(entity, timing): Date` or similar could be a good addition to the SDK.
+Expiration is stored as a block number, not a timestamp. Every app that wants to display expiry in human-readable time has to do math to calculate the proper expiration time. A utility like `entityExpiresAt(entity, timing): Date` or similar could be a good addition to the SDK.
 
 ### No full-text search
 
@@ -60,19 +53,19 @@ eq('project', 'JobArchiveTest4');
 
 It works, but it's easy to forget and produces ugly attribute keys that might already be used in a previous app. An `appId` concept at client creation that scopes reads and writes automatically would be much cleaner.
 
-Another idea - a namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach, although it also comes with its own drawbacks.
+Another idea - a namespace system, where users can register a name under which they can have folders and app paths could be an interesting approach, although it also comes with its own drawbacks, ie namespace squatting.
 
-### Features of the SDK are not easily discoverable
+### Features of the SDK could be more easily discoverable
 
-The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were obvious from the docs or type hints. Ended up sorting client-side and using a hard fetch limit at first, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full as examples seems like a large wall - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
+The query builder has `orderBy`, `count()`, cursor pagination, and `validAtBlock` — none of which were super obvious from the docs or getting started examples. I ended up sorting client-side and using a hard fetch limit at first, both of which were unnecessary. A query cookbook or richer, more focused docs examples would have helped. Seeing full examples in some docs pages seemed like a large wall - I felt I needed to dive into a whole project just to check out how some things were done - database storage examples with snippets of how they would be done via Arkiv would be a good approach.
 
-Another idea that passed my mind was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
+Another idea that passed my mind during the ideation phase was building a Web3 app using both Ethereum Mainnet + Arkiv as a storage solution (ie an NFT marketplace). I couldn't easily find an example of this - and since the timeframe for working on this was short, I decided to go Arkiv-only. One of the items I was wondering was the problem of having to sign multiple transactions (ie one on Ethereum and one on Arkiv) to say, upload your own NFT.
 
 ### Docs
 
 Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
 
-Also, docs searchability itself is not handled well. A search bar using Meilisearch or similar docs scraper would improve the experience a lot.
+Also, docs searchability itself could be improved. A search bar using Meilisearch or similar docs scraper would improve the experience a lot.
 
 Finally, the docs seem a bit over the place - there is a getting started section, which is seemingly not part of the docs (separate page, separate part of the website), and there are the "docs". I believe a unified docs.arkiv.network site would be a solid approach. I would like to see something like (simplified):
 
