@@ -82,3 +82,7 @@ Small things like having the docs link directly in the navbar - and displaying t
 ### Local development
 
 I am generally a proponent of not spamming testnets with garbage data which I did quite often during this mini-project. A local development kit could be a good next step. One good binary that would allow the developer to spin up a local testnet and a few other tools would be of great use down the line with many users.
+
+## Final remarks
+
+Given the scope and time given for this task, generally my development went smoothly. I would enjoy working on a more complex app in order to provide more detailed feedback on the dev experience as well as poking around the SDK and seeing what its pros, cons, and limitations are, in order to improve the stack.
