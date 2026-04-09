@@ -63,11 +63,7 @@ Another idea that passed my mind during the ideation phase was building a Web3 a
 
 ### Docs
 
-Generally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
-
-Also, docs searchability itself could be improved. A search bar using Meilisearch or similar docs scraper would improve the experience a lot.
-
-Finally, the docs seem a bit over the place - there is a getting started section, which is seemingly not part of the docs (separate page, separate part of the website), and there are the "docs". I believe a unified docs.arkiv.network site would be a solid approach. I would like to see something like (simplified):
+Generally, the docs seem a bit over the place - there is a getting started section, which is seemingly not part of the docs (separate page, separate part of the website), and there are the "docs". I believe a unified docs.arkiv.network site would be a solid approach. I would like to see something like (simplified):
 
 - `Core Concepts` - SDK-agnostic
 - `Getting started` - per-SDK - with a full example app
@@ -76,6 +72,12 @@ Finally, the docs seem a bit over the place - there is a getting started section
 - `Good practices` - whats different from a standard DB approach, what to watch out for as a user/developer, etc
 - `API Reference`
 - etc.
+
+Also, docs searchability itself could be improved. A search bar using Meilisearch or similar docs scraper would improve the experience a lot.
+
+Finally, a feeling I got was that it was easier for me to dig in the SDK code than to explore the docs. I believe more complex examples and use cases should be more easily accessible and visible to developers.
+
+Small things like having the docs link directly in the navbar - and displaying the docs instead of the litepaper on the Dev Portal seem like good ideas.
 
 ### Local development
 
